@@ -1,0 +1,67 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+<div class="page-header">
+  <h1>Feeds configuration</h1>
+</div>
+<div id="modFeed" tabindex="-1" role="dialog" aria-labelledby="Edit feed" aria-hidden="true" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h4 id="modFeedLbl" class="modal-title">Edit feed</h4>
+      </div>
+      <div class="modal-body">
+        <form role="form" name="editFeedForm">
+          <input type="hidden"/>
+          <div class="form-group">
+            <label for="editUrl">URL</label>
+            <input id="editUrl" type="text" name="editUrl" placeholder="Enter URL" size="60" ng-model="editFeed.url" required="required" class="form-control"/>
+          </div>&nbsp;
+          <div class="form-group">
+            <label for="editName" size="30">Name</label>
+            <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editFeed.name" class="form-control"/>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        <button type="button" ng-click="update()" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="form-feed" class="hidden-xs">
+  <form role="form" name="addFeedForm" class="form-inline pull-right">
+    <div class="form-group">
+      <label for="addUrl" class="sr-only">URL</label>
+      <input id="addUrl" type="url" name="addUrl" placeholder="Enter URL" size="60" ng-model="addFeed.url" required="required" class="input-sm form-control"/>
+    </div>
+    <button type="submit" ng-click="add()" class="btn-sm btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add</button>
+  </form>
+  <div class="clear"></div>
+</div>
+<div id="table-feed">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>State</th>
+        <th>Last checked</th>
+        <th>Fetched</th>
+        <th>Outdated</th>
+        <th>Errors</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="feed in feeds">
+        <td> <a href="{{feed.url}}" target="new">{{feed.name}}</a><a href="" ng-click="dispUpdate($index)" data-toggle="modal" data-target="#modFeed"> <i class="glyphicon glyphicon-pencil"></i></a><a href="/feeds" ng-click="delete($index)"> <i class="glyphicon glyphicon-remove"></i></a></td>
+        <td><span ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></td>
+        <td> <span>{{feed.lastChecked | timeago}}</span></td>
+        <td> <span class="badge">{{feed.lastFetchedNb}}</span></td>
+        <td><span class="badge">{{feed.lastOutdatedNb}}</span></td>
+        <td><span class="badge">{{feed.lastErrorNb}}</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>

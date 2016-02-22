@@ -1,0 +1,17 @@
+'use strict';
+
+angular.module('jarvisApp')
+    .filter('feedSelected', function() {
+        return function(array, feed) {
+            if (array == undefined) return [];
+            else if (feed == undefined || feed == null) return array;
+            else {
+                var output = [];
+                array.forEach(function(article) {
+                    // ._feed is an array because of Mongoose populate.
+                    if (article._feed[0]._id == feed._id) output.push(article);
+                });
+                return output;
+            }
+        };
+    });

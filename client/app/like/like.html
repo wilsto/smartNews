@@ -1,0 +1,58 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+<div class="page-header">
+  <h1> Words <small> <span class="badge">{{words.length}}</span></small></h1>
+</div>
+<div id="form-feed">
+  <form role="form" name="searchForm" class="form-horizontal">
+    <div class="form-group">
+      <div class="col-xs-2 hidden-xs">
+
+      </div>
+      <div class="col-xs-3 hidden-xs">
+        <input id="search-text" type="text" name="searchText" placeholder="Enter Text" size="30" ng-model="search.text" class="input-sm form-control"/>
+      </div>
+      <div class="col-xs-7">
+        <div class="btn-group btn-group-sm pull-right">
+          <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+          <button type="button" ng-click="analyse()" class="btn btn-primary"><i class="glyphicon glyphicon-tags"></i> Analyse</button>
+          <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Read all</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="btn-group" style="padding-bottom:20px;float: right" >
+    <a  ng-click="buttonFilter = 'All'" class="btn" ng-class=" (buttonFilter === 'All')? 'btn-primary' : 'btn-default' " >All</a>
+    <a ng-click="buttonFilter = 'Not Reviewed'" ng-class=" (buttonFilter === 'Not Reviewed')? 'btn-primary' : 'btn-default' " class="btn">Not Reviewed</a>
+    <a  ng-click="buttonFilter = 'Reviewed'" ng-class=" (buttonFilter === 'Reviewed')? 'btn-primary' : 'btn-default' " class="btn">Reviewed</a>
+    <a  ng-click="buttonFilter = 'Interested'" ng-class=" (buttonFilter === 'Interested')? 'btn-primary' : 'btn-default' " class="btn">Interested</a>
+    <a  ng-click="buttonFilter = 'Not Interested'" ng-class=" (buttonFilter === 'Not Interested')? 'btn-primary' : 'btn-default' " class="btn">Not Interested</a>
+</div>
+
+<div id="table-word">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>Term</th>
+        <th>Score</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="word in words | filter:search.text  | filter: myFilterWord" >
+        <td> {{word.term}}
+         <div class="label label-default">{{word.word}} </div></td>
+        <td> <span class="badge">{{word.score}}</span></td>
+        <td> 
+         <button class="btn" ng-click="like(word,0, $index)" ng-class="{'btn-danger':word.like===0}">Non merci</button>
+      </td>
+        <td>
+         <button class="btn" ng-click="like(word,1, $index)" ng-class="{'btn-success':word.like}">Ca m'intéresse</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>

@@ -1,0 +1,55 @@
+<div ng-include="'components/navbar/navbar.html'"></div><div class="col-md-12">
+<div class="page-header">
+  <h1>{{type | capitalize}} articles <small> <span class="badge">{{articles.length}}</span></small></h1>
+</div>
+<div id="form-feed">
+  <form role="form" name="searchForm" class="form-horizontal">
+    <div class="form-group">
+      <div class="col-xs-2 hidden-xs">
+        <select id="search-feed" name="searchFeed" ng-model="search.feed" ng-options="feed.name for feed in feeds" class="input-sm form-control">
+          <option value="">-- select feed --</option>
+        </select>
+      </div>
+      <div class="col-xs-3 hidden-xs">
+        <input id="search-text" type="text" name="searchText" placeholder="Enter Text" size="30" ng-model="search.text" class="input-sm form-control"/>
+      </div>
+      <div class="col-xs-7">
+        <div class="btn-group btn-group-sm pull-right">
+          <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+          <button type="button" ng-click="analyse()" class="btn btn-primary"><i class="glyphicon glyphicon-tags"></i> Analyse</button>
+          <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Read all</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<p ng-show="articles.length == 0">No such articles.</p>
+<div id="accArticles" class="panel-group">
+  <div ng-repeat="article in articles | orderBy: '-score' | filter:search.text | feedSelected:search.feed" class="panel panel-default" ng-class="{'panel-success':article.score > 19}">
+    <div ng-click="ensureRead($index)" class="panel-heading">
+
+      <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
+      <span class="label label-word label-info">{{article._feed[0].name}}</span><a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>
+      <small class="pull-right article-tb">
+      <span>{{article.date | timeago}}</span>
+      <span>
+        <span class="label label-success" ng-show="article.score>0">{{article.score}}</span>
+        <span class="label label-info">{{article.author}}</span>
+      </span>
+      <span><a href="{{article.link}}" target="new"><i class="glyphicon glyphicon-globe"></i></a></span>
+      <span><a href="" ng-click="read($index)" ng-class="(article.read == false) ? 'selected' : 'unselected'"><i class="glyphicon glyphicon-eye-open"></i></a></span>
+      <span><a href="" ng-click="star($index)" ng-class="(article.starred == true) ? 'selected' : 'unselected'"><i ng-class="(article.starred == true) ? 'glyphicon glyphicon-star' : 'glyphicon glyphicon-star-empty'"></i></a></span>
+      </small>
+      </h4>
+      <div>
+        <div class="label label-word label-default" ng-class="{' label-success' :term.score>0}" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 15" >{{term.term}} : {{term.score}}</div>
+      </div>
+    </div>
+    <div id="article-{{$index}}" class="panel-collapse collapse">
+      <div class="panel-body">
+        <div ng-bind-html="article.text"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
