@@ -3,8 +3,10 @@
 angular.module('jarvisApp')
     .controller('ArticleCtrl', function($scope, $http) {
 
+        $scope.buttonFilter = 'unread';
+
         $scope.refreshArticles = function() {
-            var articlesUrl = '/api/articles';
+            var articlesUrl = '/api/articles/' + $scope.buttonFilter;
             $http({
                 method: 'GET',
                 url: articlesUrl
@@ -17,7 +19,10 @@ angular.module('jarvisApp')
             });
 
         };
-        $scope.refreshArticles();
+
+        $scope.$watch('buttonFilter', function() {
+            $scope.refreshArticles();
+        });
 
         $http({
             method: 'GET',

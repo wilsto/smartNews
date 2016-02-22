@@ -4,7 +4,6 @@ var _ = require('lodash');
 var Article = require('./article.model');
 
 exports.getArticles = function(req, res) {
-    console.log('getArticles', 'run');
     Article.find({}).populate('_feed', 'name').exec().then(function(articles) {
         articles.sort(compareArticles);
         res.json(articles);

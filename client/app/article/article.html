@@ -1,7 +1,14 @@
 <div ng-include="'components/navbar/navbar.html'"></div><div class="col-md-12">
 <div class="page-header">
   <h1>{{type | capitalize}} articles <small> <span class="badge">{{articles.length}}</span></small></h1>
+  <div class="btn-group" style="padding-bottom:20px;float: right" >
+    <a  ng-click="buttonFilter = ''" class="btn" ng-class=" (buttonFilter === '')? 'btn-primary' : 'btn-default' " >All</a>
+    <a ng-click="buttonFilter = 'unread'" ng-class=" (buttonFilter === 'unread')? 'btn-primary' : 'btn-default' " class="btn">Unread</a>
+    <a  ng-click="buttonFilter = 'read'" ng-class=" (buttonFilter === 'read')? 'btn-primary' : 'btn-default' " class="btn">Read</a>
+    <a  ng-click="buttonFilter = 'starred'" ng-class=" (buttonFilter === 'starred')? 'btn-primary' : 'btn-default' " class="btn">Starred</a>
 </div>
+</div>
+
 <div id="form-feed">
   <form role="form" name="searchForm" class="form-horizontal">
     <div class="form-group">
@@ -25,7 +32,7 @@
 </div>
 <p ng-show="articles.length == 0">No such articles.</p>
 <div id="accArticles" class="panel-group">
-  <div ng-repeat="article in articles | orderBy: '-score' | filter:search.text | feedSelected:search.feed" class="panel panel-default" ng-class="{'panel-success':article.score > 19}">
+  <div ng-repeat="article in articles | orderBy: '-score' | filter:search.text | feedSelected:search.feed | filter: myFilterStatus" class="panel panel-default" ng-class="{'panel-success':article.score > 19}">
     <div ng-click="ensureRead($index)" class="panel-heading">
 
       <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
