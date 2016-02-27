@@ -7,7 +7,8 @@ angular.module('jarvisApp', [
     'ngAnimate',
     'btford.socket-io',
     'ui.router',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'checklist-model'
 ])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider

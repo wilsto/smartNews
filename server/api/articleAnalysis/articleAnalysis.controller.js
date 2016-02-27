@@ -22,24 +22,27 @@ exports.index = function(req, res) {
         allwords = words;
     });
 
-    Article.find(function(err, articles) {
-        if (err) {
-            return handleError(res, err);
+    Article.find({
+        terms: {
+            $exists: false
         }
-        //console.log('articles.length', articles.length);
-        async.map(articles, keywordAnalyse, function(err, words) {
-            console.log('FIni');
-            return res.status(200).json(wordsList);
-        })
-    });
+        },
+        function(err, articles) {
+            if (err) {
+                return handleError(res, err);
+            }
+            //console.log('articles.length', articles.length);
+            async.map(articles, keywordAnalyse, function(err, words) {
+                console.log('FIni');
+                return res.status(200).json(wordsList);
+            })
+        });
 };
 
 
 function keywordAnalyse(article, callback) {
 
 
-
-    // console.log('article.title', article.title);
     getPage(article.link).then(function(data) {
 
         // fréquence des mots 
@@ -56,7 +59,7 @@ function keywordAnalyse(article, callback) {
             _id: article._id
         };
         var updatedArticle = {
-            title: data.title,
+            title: article.title,
             summary: article.summary || data.summary,
             softTitle: data.softTitle,
             image: data.image,
@@ -77,8 +80,9 @@ function keywordAnalyse(article, callback) {
         updatedArticle = calculateScoreArticle(updatedArticle);
 
         read(article.link, function(err, articleReadable, meta) {
-
-            updatedArticle.text = articleReadable.content;
+            console.log('err', err);
+            console.log('updatedArticle', updatedArticle.title);
+            updatedArticle.text = (articleReadable && articleReadable.content.length > 0) ? articleReadable.content : data.text;
             Article.findOneAndUpdate(query, updatedArticle).exec().then(function(article) {
                 wordsList.push(article);
                 callback(null, article);
@@ -87,6 +91,8 @@ function keywordAnalyse(article, callback) {
 
 
     }, function(error) { // error
+        console.log('article.title', article.title);
+        console.log('article.link', article.link);
         console.error
         console.log('error', error);
         callback(null, article);
@@ -96,7 +102,7 @@ function keywordAnalyse(article, callback) {
 function calculateScoreArticle(updatedArticle) {
     var score = 0;
 
-    console.log('********** topics');
+    //console.log('********** topics');
     updatedArticle.topics = _.remove(_.map(updatedArticle.topics, function(topic, key) {
         var parsedTopic = Parser.parseMessage(topic);
 
@@ -108,7 +114,7 @@ function calculateScoreArticle(updatedArticle) {
             };
         }
     }), undefined);
-    console.log('********** bigWords');
+    //console.log('********** bigWords');
     updatedArticle.bigWords = _.remove(_.map(updatedArticle.bigWords, function(bigWord, key) {
         var parsedbigWord = Parser.parseMessage(bigWord.term);
         if (parsedbigWord.length > 0) {
@@ -120,7 +126,7 @@ function calculateScoreArticle(updatedArticle) {
         }
     }), undefined);
 
-    console.log('********** tags');
+    //console.log('********** tags');
     updatedArticle.tags = _.remove(_.map(updatedArticle.tags, function(tag, key) {
         var parsedtag = Parser.parseMessage(tag);
 
@@ -133,7 +139,7 @@ function calculateScoreArticle(updatedArticle) {
         }
     }), undefined);
 
-    console.log('********** keywords');
+    //console.log('********** keywords');
     updatedArticle.keywords = _.remove(_.map(updatedArticle.keywords, function(keyword, key) {
         var parsedkeyword = Parser.parseMessage(keyword);
 
@@ -146,7 +152,7 @@ function calculateScoreArticle(updatedArticle) {
         }
     }), undefined);
 
-    console.log('********** title : ', updatedArticle.title);
+    console.log('********** Analyse : ', updatedArticle.title);
     var wordsinTitle = _.remove(_.map(updatedArticle.title.split(' '), function(wordintitle, key) {
         var parsedwordintitle = Parser.parseMessage(wordintitle);
 
@@ -159,7 +165,7 @@ function calculateScoreArticle(updatedArticle) {
         }
     }), undefined);
 
-    console.log('********** terms');
+    //console.log('********** terms');
     var terms = updatedArticle.topics.concat(updatedArticle.bigWords);
 
 
@@ -192,7 +198,8 @@ function calculateScoreArticle(updatedArticle) {
     score = _.reduce(groupWords, function(m, x) {
         return m + parseInt(x.score);
     }, 0);
-    updatedArticle.score = (updatedArticle.lang === 'en') ? score : 0;
+    updatedArticle.score = score;
+    updatedArticle.starred = (updatedArticle.score > 19) ? true : false;
     return updatedArticle;
 }
 

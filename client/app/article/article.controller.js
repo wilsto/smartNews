@@ -3,7 +3,10 @@
 angular.module('jarvisApp')
     .controller('ArticleCtrl', function($scope, $http) {
 
-        $scope.buttonFilter = 'unread';
+        $scope.buttonFilter = 'starredunread';
+        $scope.selectedAll = false;
+        $scope.selectedArticles = {};
+        var keys = [];
 
         $scope.refreshArticles = function() {
             var articlesUrl = '/api/articles/' + $scope.buttonFilter;
@@ -19,6 +22,31 @@ angular.module('jarvisApp')
             });
 
         };
+
+        $scope.changeSelected = function() {
+            keys = _.compact(_.map($scope.selectedArticles, function(box, key) {
+                if (box) {
+                    return key;
+                }
+            }));;
+        };
+
+        $scope.changeSelectedAll = function() {
+            console.log('$scope.selectedAll', $scope.selectedAll);
+            ($scope.selectedAll) ? $scope.checkAll() : $scope.uncheckAll();
+        }
+
+        $scope.checkAll = function() {
+            _.each($scope.articles, function(article, key) {
+                $scope.selectedArticles[article._id] = true;
+            });;
+            $scope.changeSelected();
+        };
+        $scope.uncheckAll = function() {
+            $scope.selectedArticles = {};
+            $scope.changeSelected();
+        };
+
 
         $scope.$watch('buttonFilter', function() {
             $scope.refreshArticles();

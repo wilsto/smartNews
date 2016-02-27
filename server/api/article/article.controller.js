@@ -36,6 +36,26 @@ exports.getStarredArticles = function(req, res) {
     });
 }
 
+exports.getStarredUnreadArticles = function(req, res) {
+    Article.find({
+        read: false,
+        starred: true
+    }).populate('_feed', 'name').exec().then(function(articles) {
+        articles.sort(compareArticles);
+        res.json(articles);
+    });
+}
+
+exports.getStarredReadArticles = function(req, res) {
+    Article.find({
+        read: true,
+        starred: true
+    }).populate('_feed', 'name').exec().then(function(articles) {
+        articles.sort(compareArticles);
+        res.json(articles);
+    });
+}
+
 exports.updateArticle = function(req, res) {
     var query = {
         _id: req.body._id
