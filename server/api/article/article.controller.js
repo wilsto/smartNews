@@ -4,8 +4,37 @@ var _ = require('lodash');
 var Article = require('./article.model');
 
 exports.getArticles = function(req, res) {
-    Article.find({}).populate('_feed', 'name').exec().then(function(articles) {
+    console.log('req.query', req.query);
+
+    var query = {};
+    if (typeof req.query.read !== 'undefined') {
+        query.read = req.query.read;
+    };
+    if (typeof req.query.starred !== 'undefined') {
+        query.starred = req.query.starred;
+    };
+    if (typeof req.query.analys !== 'undefined') {
+        query.score = (req.query.analys == 'true') ? {
+            $gt: 0
+        } : 0;
+    };
+    if (typeof req.query.title !== 'undefined') {
+        query.title = new RegExp(req.query.title, "i");
+    };
+
+
+    console.log('query', query);
+
+    Article.find(query, null, {
+        skip: req.query.after,
+        limit: 50
+    }).sort({
+        score: -1,
+        date: -1
+    }).populate('_feed', 'name').exec().then(function(articles) {
         articles.sort(compareArticles);
+        console.log('articles', articles.length);
+
         res.json(articles);
     });
 }

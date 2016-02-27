@@ -8,7 +8,7 @@ angular.module('jarvisApp', [
     'btford.socket-io',
     'ui.router',
     'ui.bootstrap',
-    'checklist-model'
+    'infinite-scroll'
 ])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider
