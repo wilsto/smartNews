@@ -18,9 +18,9 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">Feed
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Articles</a></li>
-            <li><a href="#">Tweets</a></li>
-            <li><a href="#">Page 1-3</a></li> 
+            <li><a href="/article">All</a></li> 
+            <li><a href="/article">Articles</a></li>
+            <li><a href="/article">Tweets</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -28,8 +28,8 @@
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Interest Centers</a></li>
-            <li><a href="#">Action list</a></li>
-            <li><a href="#">Page 1-3</a></li> 
+            <li><a href="/feed">Rss Feeds</a></li>
+            <li><a href="/like">Like Words</a></li>
           </ul>
         </li>
         <li ng-show="isAdmin()" ng-class="{active: isActive('/admin')}"><a href="/admin">Admin</a></li>

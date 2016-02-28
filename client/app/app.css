@@ -130,3 +130,7 @@ input[type=checkbox]
     -webkit-transform: scaleY(1.0);
   }
 }
+
+.text-green{
+  color:#4AA91C;
+}

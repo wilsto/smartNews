@@ -5,15 +5,6 @@ angular.module('jarvisApp')
         $scope.menu = [{
             'title': 'Home',
             'link': '/'
-        }, {
-            'title': 'Feed',
-            'link': '/feed'
-        }, {
-            'title': 'Articles',
-            'link': '/article'
-        }, {
-            'title': 'Like',
-            'link': '/like'
         }];
 
         $scope.isCollapsed = true;

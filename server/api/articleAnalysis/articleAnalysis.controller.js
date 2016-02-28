@@ -13,8 +13,7 @@ var Parser = require('../../NLTK/parser');
 var wordsList = [];
 var allwords;
 
-// Get list of articleAnalysiss
-exports.index = function(req, res) {
+var articleAnalys = function(req, res) {
     Word.find(function(err, words) {
         if (err) {
             return handleError(res, err);
@@ -23,9 +22,9 @@ exports.index = function(req, res) {
     });
 
     Article.find({
-        terms: {
-            $exists: false
-        }
+            terms: {
+                $exists: false
+            }
         },
         function(err, articles) {
             if (err) {
@@ -33,12 +32,19 @@ exports.index = function(req, res) {
             }
             //console.log('articles.length', articles.length);
             async.map(articles, keywordAnalyse, function(err, words) {
-                console.log('FIni');
+                console.log(' End of Analysis ...##########...');
                 return res.status(200).json(wordsList);
             })
         });
 };
 
+process.on('analysNewArticles', function(data) {
+    console.log('...##########... Start Analysis');
+    articleAnalys(undefined, undefined);
+});
+
+// Get list of articleAnalysiss
+exports.index = articleAnalys;
 
 function keywordAnalyse(article, callback) {
 
@@ -59,7 +65,7 @@ function keywordAnalyse(article, callback) {
             _id: article._id
         };
         var updatedArticle = {
-            title: article.title,
+            //title: article.title,
             summary: article.summary || data.summary,
             softTitle: data.softTitle,
             image: data.image,

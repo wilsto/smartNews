@@ -105,6 +105,8 @@ angular.module('jarvisApp')
         }
 
         $scope.analyse = function() {
+            $scope.busy = true;
+            $scope.articles = [];
             $http({
                 method: 'GET',
                 url: '/api/articleAnalysiss'
@@ -163,7 +165,7 @@ angular.module('jarvisApp')
             });
         }
         $scope.btnstarArr = 0;
-        $scope.btnreadArr = 0;
+        $scope.btnreadArr = 1;
         $scope.btnanalysArr = 0;
         $scope.btntxt = ["included", "excluded", "off"];
 
@@ -177,6 +179,7 @@ angular.module('jarvisApp')
                     break;
                 case 2:
                     $scope.btnstarArr = 0;
+                    $scope.btnanalysArr = 0;
                     break;
             };
             $scope.articles = [];
@@ -205,8 +208,11 @@ angular.module('jarvisApp')
             switch ($scope.btnanalysArr) {
                 case 0:
                     $scope.btnanalysArr = 1;
+                    $scope.btnstarArr = 2;
+                    $scope.btnreadArr = 2;
                     break;
                 case 1:
+                    $scope.btnanalysArr = 2
                     $scope.btnanalysArr = 2
                     break;
                 case 2:

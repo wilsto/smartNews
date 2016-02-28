@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/tweet/tweet.socket').register(socket);
   require('../api/interest/interest.socket').register(socket);
   require('../api/word/word.socket').register(socket);
   require('../api/articleAnalysis/articleAnalysis.socket').register(socket);

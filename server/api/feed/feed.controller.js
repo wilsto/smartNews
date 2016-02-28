@@ -10,7 +10,15 @@ var conf = require('../config.json');
 
 // Feeds functions
 
-exports.refreshFeeds = function(req, res) {
+var timer = setInterval(function() {
+    console.log('refreshFeeds auto');
+    var req = {};
+    req.query = {};
+    var res = {}
+    refreshFeeds(req, res);
+}, 60 * 60 * 1000)
+
+var refreshFeeds = function(req, res) {
     Feed.find().exec().then(function(feeds) {
         async.map(feeds, refreshFeed, function(err, feeds) {
             if (conf.activePeriod != -1) {
@@ -22,10 +30,13 @@ exports.refreshFeeds = function(req, res) {
                 }).where('date').lt(bound).exec().then(function(nbArticles) {
                     res.json(feeds);
                 });
+                process.emit('analysNewArticles', feeds);
             } else res.json(feeds);
         });
     });
 };
+
+exports.refreshFeeds = refreshFeeds;
 
 exports.getFeed = function(req, res) {
     var id = req.params.id;
@@ -116,6 +127,7 @@ function refreshFeed(feed, callBack) {
     feedParser.on('readable', function() {
         var stream = this;
         var item;
+        console.log('feed.name', feed.name);
 
         while (item = stream.read()) {
             var candidate = extractArticle(item, feed);
@@ -123,11 +135,13 @@ function refreshFeed(feed, callBack) {
                 if (checkPeriod(candidate)) {
                     articles.push(candidate);
                 } else outdated++;
-            } else errors++;
+            } else {
+                console.log('candidate', candidate);
+                errors++;
+            }
         }
     });
     feedParser.on('end', function() {
-
         var guids = articles.map(function(article) {
             return article.guid;
         });
@@ -184,10 +198,10 @@ function compareArticles(a1, a2) {
 function extractArticle(item, feed) {
     return new Article({
         title: item.title,
-        summary: item.summary,
+        // summary: item.summary,
         description: item.description,
-        author: item.author,
-        date: Date.parse(item.date),
+        //author: item.author,
+        date: Date.parse(item.date) || Date.parse(item.pubDate) || Date.now(),
         link: item.link,
         guid: item.guid,
         _feed: feed._id,

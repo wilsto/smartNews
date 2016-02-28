@@ -32,6 +32,7 @@
     "socket.io-client": "^1.0.6",
     "socketio-jwt": "^4.3.4",
     "summarizer": "^1.0.0",
+    "twit": "^2.2.2",
     "unfluff": "^1.0.0"
   },
   "devDependencies": {

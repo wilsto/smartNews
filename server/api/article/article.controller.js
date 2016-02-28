@@ -3,8 +3,7 @@
 var _ = require('lodash');
 var Article = require('./article.model');
 
-exports.getArticles = function(req, res) {
-    console.log('req.query', req.query);
+var getArticles = function(req, res) {
 
     var query = {};
     if (typeof req.query.read !== 'undefined') {
@@ -16,14 +15,11 @@ exports.getArticles = function(req, res) {
     if (typeof req.query.analys !== 'undefined') {
         query.score = (req.query.analys == 'true') ? {
             $gt: 0
-        } : 0;
+        } : undefined;
     };
     if (typeof req.query.title !== 'undefined') {
         query.title = new RegExp(req.query.title, "i");
     };
-
-
-    console.log('query', query);
 
     Article.find(query, null, {
         skip: req.query.after,
@@ -33,57 +29,11 @@ exports.getArticles = function(req, res) {
         date: -1
     }).populate('_feed', 'name').exec().then(function(articles) {
         articles.sort(compareArticles);
-        console.log('articles', articles.length);
+        res.json(articles);
+    });
 
-        res.json(articles);
-    });
-}
-exports.getUnreadArticles = function(req, res) {
-    Article.find({
-        read: false
-    }).populate('_feed', 'name').exec().then(function(articles) {
-        articles.sort(compareArticles);
-        res.json(articles);
-    });
-}
-
-exports.getReadArticles = function(req, res) {
-    Article.find({
-        read: true
-    }).populate('_feed', 'name').exec().then(function(articles) {
-        articles.sort(compareArticles);
-        res.json(articles);
-    });
-}
-
-exports.getStarredArticles = function(req, res) {
-    Article.find({
-        starred: true
-    }).populate('_feed', 'name').exec().then(function(articles) {
-        articles.sort(compareArticles);
-        res.json(articles);
-    });
-}
-
-exports.getStarredUnreadArticles = function(req, res) {
-    Article.find({
-        read: false,
-        starred: true
-    }).populate('_feed', 'name').exec().then(function(articles) {
-        articles.sort(compareArticles);
-        res.json(articles);
-    });
-}
-
-exports.getStarredReadArticles = function(req, res) {
-    Article.find({
-        read: true,
-        starred: true
-    }).populate('_feed', 'name').exec().then(function(articles) {
-        articles.sort(compareArticles);
-        res.json(articles);
-    });
-}
+};
+exports.getArticles = getArticles;
 
 exports.updateArticle = function(req, res) {
     var query = {
