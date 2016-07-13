@@ -11,7 +11,7 @@ var Article = require('../article/article.model');
 var Word = require('../word/word.model');
 var Parser = require('../../NLTK/parser');
 var wordsList = [];
-var allwords;
+var allwords = [];
 
 var articleAnalys = function(req, res) {
     Word.find(function(err, words) {
@@ -30,11 +30,13 @@ var articleAnalys = function(req, res) {
             if (err) {
                 return handleError(res, err);
             }
-            //console.log('articles.length', articles.length);
+            console.log('articlesToAnalyse', articles.length);
             async.map(articles, keywordAnalyse, function(err, words) {
                 console.log(' End of Analysis ...##########...');
-                return res.status(200).json(wordsList);
-            })
+                if (res) {
+                    return res.status(200).json(wordsList);
+                }
+            });
         });
 };
 
@@ -65,29 +67,29 @@ function keywordAnalyse(article, callback) {
             _id: article._id
         };
         var updatedArticle = {
-            //title: article.title,
-            summary: article.summary || data.summary,
-            softTitle: data.softTitle,
-            image: data.image,
-            videos: data.videos,
-            keywords: data.keywords,
-            text: data.text,
-            tags: data.tags,
-            lang: data.lang,
-            canonicalLink: data.canonicalLink,
-            author: data.author,
-            topics: data.stats.topics,
-            bigWords: wordArray,
-            words: data.stats.words,
-            sentiment: data.stats.sentiment,
-            difficulty: data.stats.difficulty,
-            minutes: data.stats.minutes
-        }
+                title: article.title,
+                summary: article.summary || data.summary,
+                softTitle: data.softTitle,
+                image: data.image,
+                videos: data.videos,
+                keywords: data.keywords,
+                text: data.text,
+                tags: data.tags,
+                lang: data.lang,
+                canonicalLink: data.canonicalLink,
+                author: data.author,
+                topics: data.stats.topics,
+                bigWords: wordArray,
+                words: data.stats.words,
+                sentiment: data.stats.sentiment,
+                difficulty: data.stats.difficulty,
+                minutes: data.stats.minutes
+            }
+            //console.log('updatedArticle', updatedArticle);
         updatedArticle = calculateScoreArticle(updatedArticle);
 
         read(article.link, function(err, articleReadable, meta) {
-            console.log('err', err);
-            console.log('updatedArticle', updatedArticle.title);
+            //console.log('updatedArticle', updatedArticle.title);
             updatedArticle.text = (articleReadable && articleReadable.content.length > 0) ? articleReadable.content : data.text;
             Article.findOneAndUpdate(query, updatedArticle).exec().then(function(article) {
                 wordsList.push(article);
@@ -99,7 +101,7 @@ function keywordAnalyse(article, callback) {
     }, function(error) { // error
         console.log('article.title', article.title);
         console.log('article.link', article.link);
-        console.error
+        // console.error
         console.log('error', error);
         callback(null, article);
     });

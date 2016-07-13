@@ -37,7 +37,7 @@ exports.index = function(req, res) {
             item;
 
         while (item = stream.read()) {
-            console.log(item.title);
+            //console.log(item.title);
         }
     });
 

@@ -1,67 +1,65 @@
-<div ng-include="'components/navbar/navbar.html'"></div><div class="col-md-12">
-<div class="loading" ng-show="busy">
-  <div class="loading-text">
-<div class="spinner">
-  <div class="rect1"></div>
-  <div class="rect2"></div>
-  <div class="rect3"></div>
-  <div class="rect4"></div>
-  <div class="rect5"></div>
-  Loading 
-</div>
-</div>
-</div>
-<div class="page-header">
-  <h1>{{type | capitalize}} articles <small> <span class="badge">{{articles.length}}</span></small>
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+    <div class="loading-jarvis
+" ng-show="busy">
+        <div class="loading-text">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                Loading
+            </div>
+        </div>
+    </div>
+    <div class="page-header">
+        <h1>{{type | capitalize}} articles <small> <span class="badge">{{articles.length }} / {{nbarticles}}</span></small>
           <div class="btn-group btn-group-sm pull-right" >
           <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Scan</button>
           <button type="button" ng-click="analyse()" class="btn btn-primary"><i class="glyphicon glyphicon-tags"></i> Analyse</button>
           <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Mark as Read</button>
         </div>
 </h1>
-</div>
-
-<div id="form-feed">
-  <form role="form" name="searchForm" class="form-horizontal">
-    <div class="form-group">
-<div  class="col-xs-2">
-      <input type="checkbox" ng-model="selectedAll" ng-change='changeSelectedAll()' style ="margin-left: 16px;"> Select All
-</div>
-<div  class="col-xs-1">
-     Filters :
-</div>
-      <div class="col-xs-4">
-  <div class="btn-group"  >
-    <a  ng-click="changeStarButton()" ng-class="{'btn-success' : btnstarArr === 0, 'btn-warning' :btnstarArr === 1, 'btn-default' :btnstarArr === 2}" class="btn"><u>Star  </u>: {{btntxt[btnstarArr]}}</a>
-    <a  ng-click="changeReadButton()" ng-class="{'btn-success' : btnreadArr === 0, 'btn-warning' :btnreadArr === 1, 'btn-default' :btnreadArr === 2}" class="btn"><u>Read  </u>: {{btntxt[btnreadArr]}}</a>
-    <a  ng-click="changeAnalysButton()" ng-class="{'btn-success' : btnanalysArr === 0, 'btn-warning' :btnanalysArr === 1, 'btn-default' :btnanalysArr === 2}" class="btn"><u>Analys  </u>: {{btntxt[btnanalysArr]}}</a>
-</div>
-      </div>
-      <div class="col-xs-2 hidden-xs">
-        <select id="search-feed" name="searchFeed" ng-model="search.feed" ng-options="feed.name for feed in feeds" class="input-sm form-control" style="width: 100%;height:35px">
-          <option value="">-- select feed --</option>
-        </select>
-      </div>
-      <div class="col-xs-3 hidden-xs">
-
-        <button style="float: right" class="btn btn-default" ng-click="searchText()"> <i class="glyphicon glyphicon-search"></i> </button>
-<div style="overflow: hidden; padding-right: .5em;">
-        <input id="search-text" type="text" name="searchText" placeholder="Enter Text" style="width: 100%;height:35px" ng-model="search.text" class="input-sm form-control"/>
-</div>
-      </div>
-
-
     </div>
-  </form>
-</div>
-<p ng-show="articles.length == 0">No such articles.</p>
-<div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
-  <div ng-repeat="article in articles | orderBy: '-score' " class="panel panel-default" ng-class="{'panel-success':article.score > 19}" >
-    <div ng-click="ensureRead($index)" class="panel-heading">
-
-      <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
+    <div id="form-feed">
+        <form role="form" name="searchForm" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-2">
+                    <input type="checkbox" ng-model="selectedAll" ng-change='changeSelectedAll()' style="margin-left: 16px;"> Select All
+                </div>
+                <div class="col-xs-1">
+                    Filters :
+                </div>
+                <div class="col-xs-6">
+                    <div class="btn-group">
+                        <a ng-click="changeStarButton()" ng-class="{'btn-success' : btnstarArr === 0, 'btn-warning' :btnstarArr === 1, 'btn-default' :btnstarArr === 2}" class="btn"><u>Star  </u>: {{btntxt[btnstarArr]}}</a>
+                        <a ng-click="changeReadButton()" ng-class="{'btn-success' : btnreadArr === 0, 'btn-warning' :btnreadArr === 1, 'btn-default' :btnreadArr === 2}" class="btn"><u>Read  </u>: {{btntxt[btnreadArr]}}</a>
+                        <a ng-click="changeAnalysButton()" ng-class="{'btn-success' : btnanalysArr === 0, 'btn-warning' :btnanalysArr === 1, 'btn-default' :btnanalysArr === 2}" class="btn"><u>Analys  </u>: {{btntxt[btnanalysArr]}}</a>
+                    </div>
+                </div>
+                <!--                 <div class="col-xs-2 hidden-xs">
+    <select id="search-feed" name="searchFeed" ng-model="search.feed" ng-options="feed.name for feed in feeds" class="input-sm form-control" style="width: 100%;height:35px">
+        <option value="">-- select feed --</option>
+    </select>
+</div> -->
+                <div class="col-xs-3 hidden-xs">
+                    <button style="float: right" class="btn btn-default" ng-click="searchText()"> <i class="glyphicon glyphicon-search"></i> </button>
+                    <div style="overflow: hidden; padding-right: .5em;">
+                        <input id="search-text" type="text" name="searchText" placeholder="Enter Text" style="width: 100%;height:35px" ng-model="search.text" class="input-sm form-control" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <p ng-show="articles.length == 0">No such articles.</p>
+    <div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
+        <div ng-repeat="article in articles" class="panel panel-default" ng-class="{'panel-success':article.score > 19}">
+            <div ng-click="ensureRead($index)" class="panel-heading">
+                <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
       <input type="checkbox" ng-model="selectedArticles[article._id]" ng-change='changeSelected()'>
-      <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>      <span><a href="" ng-click="read($index)" ng-class="(article.read == false) ? 'selected' : 'unselected'"><i ng-class="(article.read == true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
+      <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>     
+       <span><a href="" ng-click="read($index)" ng-class="(article.read == false) ? 'selected' : 'unselected'"><i ng-class="(article.read == true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
       <small class="pull-right article-tb">
       <span>{{article.date | timeago}}</span>
       <span>
@@ -73,16 +71,16 @@
 
       </small>
       </h4>
-      <div>
-      <span class="label label-word label-info">{{article._feed[0].name}}</span>
-        <div class="label label-word label-default" ng-class="{' label-success' :term.score>0}" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 15" >{{term.term}} : {{term.score}}</div>
-      </div>
+                <div>
+                    <span class="label label-word label-info">{{article._feed.name}}</span>
+                    <div class="label label-word label-default" ng-class="{' label-success' :term.score>0}" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 10">{{term.term}} : {{term.score}}</div>
+                </div>
+            </div>
+            <div id="article-{{$index}}" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div ng-bind-html="article.text"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="article-{{$index}}" class="panel-collapse collapse">
-      <div class="panel-body">
-        <div ng-bind-html="article.text"></div>
-      </div>
-    </div>
-  </div>
-</div>
 </div>

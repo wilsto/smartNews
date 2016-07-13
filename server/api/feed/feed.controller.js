@@ -7,21 +7,12 @@ var Feed = require('./feed.model');
 var Article = require('../article/article.model');
 var async = require('async');
 var conf = require('../config.json');
-
-// Feeds functions
-
-var timer = setInterval(function() {
-    console.log('refreshFeeds auto');
-    var req = {};
-    req.query = {};
-    var res = {}
-    refreshFeeds(req, res);
-}, 60 * 60 * 1000)
-
+var articles = [];
 var refreshFeeds = function(req, res) {
+    console.log('refreshFeeds in progress');
     Feed.find().exec().then(function(feeds) {
         async.map(feeds, refreshFeed, function(err, feeds) {
-            if (conf.activePeriod != -1) {
+            if (conf.activePeriod !== -1) {
                 var now = new Date();
                 var bound = new Date();
                 bound.setMonth(bound.getMonth() - conf.activePeriod);
@@ -37,6 +28,30 @@ var refreshFeeds = function(req, res) {
 };
 
 exports.refreshFeeds = refreshFeeds;
+
+// Feeds functions
+var timer = setInterval(function() {
+    console.log('refreshFeeds auto');
+    var req = {};
+    req.query = {};
+    var res = {}
+    refreshFeeds(req, res);
+}, 5 * 60 * 1000)
+refreshFeeds();
+
+var refreshOneFeed = function(req, res) {
+    var id = req.params.id;
+    Feed.find({ _id: id }).exec().then(function(feeds) {
+        console.log('feeds', feeds.url);
+        articles = [];
+        async.map(feeds, refreshFeed, function(err, feeds) {
+            process.emit('analysNewArticles', feeds);
+            res.json(feeds);
+        });
+    });
+};
+
+exports.refreshOneFeed = refreshOneFeed;
 
 exports.getFeed = function(req, res) {
     var id = req.params.id;
@@ -87,7 +102,10 @@ exports.updateFeed = function(req, res) {
     var update = {
         name: req.body.name,
         url: req.body.url,
+        type: req.body.type,
+        language: req.body.language,
     }
+    console.log('update', update);
     Feed.findOneAndUpdate(query, update).exec().then(function(feed) {
         res.status(200).send(feed);
     });
@@ -104,21 +122,25 @@ exports.index = function(req, res) {
 };
 
 function refreshFeed(feed, callBack) {
-    var articles = [];
     var feedMeta;
     var errors = 0;
     var outdated = 0;
     var req = request(feed.url);
+    console.log('feed.url', feed.url);
     var feedParser = new FeedParser();
     req.on('error', function(error) {
+        console.log('error', error);
         callBack(error);
     });
     req.on('response', function(res) {
         var stream = this;
-        if (res.statusCode != 200) callback(new Error('Bad status code'));
+        if (res.statusCode !== 200) {
+            console.log('Bad status code');
+        }
         stream.pipe(feedParser);
     });
     feedParser.on('error', function(error) {
+        console.log('error', error);
         callBack(error);
     });
     feedParser.on('meta', function(meta) {
@@ -127,8 +149,7 @@ function refreshFeed(feed, callBack) {
     feedParser.on('readable', function() {
         var stream = this;
         var item;
-        console.log('feed.name', feed.name);
-
+        //console.log('feed.name', feed.name);
         while (item = stream.read()) {
             var candidate = extractArticle(item, feed);
             if (checkValues(candidate)) {
@@ -136,25 +157,30 @@ function refreshFeed(feed, callBack) {
                     articles.push(candidate);
                 } else outdated++;
             } else {
-                console.log('candidate', candidate);
+                //console.log('candidate', candidate);
                 errors++;
             }
         }
     });
     feedParser.on('end', function() {
+        console.log('articles', articles.length);
         var guids = articles.map(function(article) {
             return article.guid;
         });
-        Article.find({
-            _feed: feed._id
-        }).where('guid').in(guids).exec().then(function(existingArticles) {
+        //console.log('guids', guids);
+        Article.find().exec().then(function(existingArticles) {
             var existingGuids = existingArticles.map(function(article) {
                 return article.guid;
             });
+            //console.log('existingGuids', existingGuids);
             var newArticles = [];
             for (var i = 0; i < articles.length; i++) {
                 var cur = articles[i];
-                if (existingGuids.indexOf(cur.guid) == -1) newArticles.push(cur);
+                //console.log('cur.guid', cur.guid);
+                //console.log('existingGuids.indexOf(cur.guid)', existingGuids.indexOf(cur.guid));
+                if (existingGuids.indexOf(articles[i].guid) === -1) {
+                    newArticles.push(articles[i]);
+                }
             }
             Article.create(newArticles, function(err) {
                 var state = (errors > 0) ? 'Incomplete' : 'OK';
@@ -177,14 +203,14 @@ function refreshFeed(feed, callBack) {
 
 
 function checkValues(article) {
-    if (article.date == undefined) return false;
-    else if (article.title == undefined) return false;
-    else if (article.link == undefined) return false;
+    if (article.date === undefined) return false;
+    else if (article.title === undefined) return false;
+    else if (article.link === undefined) return false;
     else return true;
 }
 
 function checkPeriod(article) {
-    if (conf.activePeriod == -1) return true;
+    if (conf.activePeriod === -1) return true;
     else if (monthsDiff(article.date, new Date()) > conf.activePeriod) return false;
     else return true;
 }
@@ -192,8 +218,6 @@ function checkPeriod(article) {
 function compareArticles(a1, a2) {
     return new Date(a2.date).getTime() - new Date(a1.date).getTime();
 }
-
-
 
 function extractArticle(item, feed) {
     return new Article({

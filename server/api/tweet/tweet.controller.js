@@ -23,32 +23,34 @@ var j = schedule.scheduleJob('0 9,13,15,17,19,21,23 * * *', function() {
 });
 
 // retrieve image online
+var removefunctiontowork = function() {
 
-request.get('https://www.mindtools.com/media/Images/Articles/Career_Skills/Key_Career_Points/IS_9810839_slobo_226x150.jpg', function(error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var b64content = new Buffer(body).toString('base64');
+        request.get('https://www.mindtools.com/media/Images/Articles/Career_Skills/Key_Career_Points/IS_9810839_slobo_226x150.jpg', function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var b64content = new Buffer(body).toString('base64');
 
-        // first we must post the media to Twitter
-        T.post('media/upload', {
-            media_data: b64content
-        }, function(err, data, response) {
+                // first we must post the media to Twitter
+                T.post('media/upload', {
+                    media_data: b64content
+                }, function(err, data, response) {
 
-            // now we can reference the media and post a tweet (media will attach to the tweet)
-            var mediaIdStr = data.media_id_string
-            var params = {
-                status: 'loving life #nofilter',
-                media_ids: [mediaIdStr]
+                    // now we can reference the media and post a tweet (media will attach to the tweet)
+                    var mediaIdStr = data.media_id_string
+                    var params = {
+                        status: 'loving life #nofilter',
+                        media_ids: [mediaIdStr]
+                    }
+
+                    T.post('statuses/update', params, function(err, data, response) {
+                        console.log(' tweet ' + data)
+                    })
+                })
+
             }
-
-            T.post('statuses/update', params, function(err, data, response) {
-                console.log(data)
-            })
-        })
+        });
 
     }
-});
-
-// Get list of tweets
+    // Get list of tweets
 exports.index = function(req, res) {
     Tweet.find(function(err, tweets) {
         if (err) {

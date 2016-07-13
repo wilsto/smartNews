@@ -1,0 +1,12 @@
+.likeWord {
+    padding: 5px;
+    float: left;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    margin: 5px;
+    height: 75px;
+}
+
+.likeWord h3 {
+    margin-top: 0;
+}

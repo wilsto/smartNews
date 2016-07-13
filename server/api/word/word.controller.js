@@ -28,8 +28,9 @@ exports.show = function(req, res) {
 
 // Creates a new word in the DB.
 exports.create = function(req, res) {
-    console.log('req', req.body);
+/*    console.log('req', req.body);
     console.log('req.params', req.params);
+*/
     Word.remove({
         term: req.body.term
     }).exec().then(function() {

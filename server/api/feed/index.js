@@ -5,6 +5,7 @@ var controller = require('./feed.controller');
 
 var router = express.Router();
 router.get('/', controller.getFeeds);
+router.get('/refresh/:id', controller.refreshOneFeed);
 router.get('/refresh', controller.refreshFeeds);
 router.get('/:id', controller.getFeed);
 router.post('/', controller.addFeed);

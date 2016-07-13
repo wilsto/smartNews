@@ -4,10 +4,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ArticleSchema = mongoose.Schema({
-    _feed: [{
+    _feed: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Feed'
-    }],
+    },
     guid: String,
     title: String,
     softTitle: String,
