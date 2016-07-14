@@ -7,18 +7,18 @@
 var Feed = require('./feed.model');
 
 exports.register = function(socket) {
-  Feed.schema.post('save', function (doc) {
-    onSave(socket, doc);
-  });
-  Feed.schema.post('remove', function (doc) {
-    onRemove(socket, doc);
-  });
+    Feed.schema.post('save', function(doc) {
+        onSave(socket, doc);
+    });
+    Feed.schema.post('remove', function(doc) {
+        onRemove(socket, doc);
+    });
 }
 
 function onSave(socket, doc, cb) {
-  socket.emit('feed:save', doc);
+    socket.emit('feed:save', doc);
 }
 
 function onRemove(socket, doc, cb) {
-  socket.emit('feed:remove', doc);
+    socket.emit('feed:remove', doc);
 }

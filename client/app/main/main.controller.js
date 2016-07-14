@@ -9,6 +9,11 @@ angular.module('jarvisApp')
             socket.syncUpdates('thing', $scope.awesomeThings);
         });
 
+        $http.get('/api/logs/top20').success(function(logs) {
+            $scope.logs = logs;
+            socket.syncUpdates('log', $scope.logs);
+        });
+
         $scope.addThing = function() {
             if ($scope.newThing === '') {
                 return;
@@ -24,4 +29,5 @@ angular.module('jarvisApp')
         $scope.$on('$destroy', function() {
             socket.unsyncUpdates('thing');
         });
+
     });

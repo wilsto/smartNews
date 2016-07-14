@@ -14,6 +14,7 @@ var _ = require('lodash');
 var async = require('async');
 var ArticleAnalysis = require('./articleAnalysis.model');
 var Article = require('../article/article.model');
+var Thing = require('../thing/thing.model');
 var Word = require('../word/word.model');
 var Parser = require('../../NLTK/parser');
 var wordsList = [];
@@ -28,49 +29,64 @@ var articleAnalys = function(req, res) {
     });
 
     var articleQuery = (req && req.query.all) ? {} : {
-        terms: {
+        score: {
             $exists: false
         }
     };
-    console.log('articleQuery', articleQuery);
     Article.find(articleQuery,
         function(err, articles) {
             if (err) {
                 return handleError(res, err);
             }
-            console.log('articlesToAnalyse', articles.length);
+            console.log('[-- Start Article Analysis');
+            console.log(' -- ArticleToAnalyse : ', articles.length);
             async.map(articles, keywordAnalyse, function(err, words) {
-                console.log(' End of Analysis ...##########...');
+                process.emit('CountArticles');
+                console.log('--] End Article Analysis');
+
+                var articleQuery = { starred: true, read: false, type: 'Pro' };
+                Article.find(articleQuery,
+                    function(err, articles) {
+                        Thing.update({ name: 'Articles' }, { $set: { 'available.pro': articles.length } }, function(err, results) {
+                            console.log('ArtcileCount Pro Updated', results);
+                        });
+                    });
+                var articleQuery2 = { starred: true, read: false, type: 'Perso' };
+                Article.find(articleQuery2,
+                    function(err, articles) {
+                        Thing.update({ name: 'Articles' }, { $set: { 'available.perso': articles.length } }, function(err, results) {
+                            console.log('ArtcileCount Perso Updated', results);
+                        });
+                    });
+
                 if (res) {
-                    console.log('res', res);
                     return res.status(200).json(wordsList);
                 }
             });
         });
 };
 
-process.on('analysNewArticles', function(data) {
-    console.log('...##########... Start Analysis');
+process.on('AnalyseNewArticles', function() {
     articleAnalys(undefined, undefined);
 });
 
+
+
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('articleAnalys auto');
+    console.log('*** Article Analyse Automatic -- Simple 1 min');
     var req = {};
     req.query = {};
-    var res = undefined;
-    articleAnalys(req, res);
-}, 1 * 60 * 1000);
+    articleAnalys(req, undefined);
+}, 60 * 1000);
 
 
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('articleAnalys auto');
+    console.log('*** Article Analyse Automatic -- Full 60 min');
     var req = {};
     req.query = { all: true };
-    var res = undefined;
-    articleAnalys(req, res);
+    articleAnalys(req, undefined);
 }, 60 * 60 * 1000);
 
 // Get list of articleAnalysiss
@@ -93,25 +109,25 @@ function keywordAnalyse(article, callback) {
             _id: article._id
         };
         var updatedArticle = {
-                title: article.title,
-                summary: article.summary || data.summary,
-                softTitle: data.softTitle,
-                image: data.image,
-                videos: data.videos,
-                keywords: data.keywords,
-                text: data.text,
-                tags: data.tags,
-                lang: data.lang,
-                canonicalLink: data.canonicalLink,
-                author: data.author,
-                topics: data.stats.topics,
-                bigWords: wordArray,
-                words: data.stats.words,
-                sentiment: data.stats.sentiment,
-                difficulty: data.stats.difficulty,
-                minutes: data.stats.minutes
-            }
-            //console.log('updatedArticle', updatedArticle);
+            title: article.title,
+            summary: article.summary || data.summary,
+            softTitle: data.softTitle,
+            image: data.image,
+            videos: data.videos,
+            keywords: data.keywords,
+            text: data.text,
+            tags: data.tags,
+            lang: data.lang,
+            canonicalLink: data.canonicalLink,
+            author: data.author,
+            topics: data.stats.topics,
+            bigWords: wordArray,
+            words: data.stats.words,
+            sentiment: data.stats.sentiment,
+            difficulty: data.stats.difficulty,
+            minutes: data.stats.minutes
+        };
+        //console.log('updatedArticle', updatedArticle);
         updatedArticle = calculateScoreArticle(updatedArticle);
 
         read(article.link, function(err, articleReadable, meta) {
@@ -125,7 +141,6 @@ function keywordAnalyse(article, callback) {
 
 
     }, function(error) { // error
-        console.log('article.title', article.title);
         console.log('article.link', article.link);
         // console.error
         console.log('error', error);

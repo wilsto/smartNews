@@ -8,7 +8,10 @@ var ThingSchema = new Schema({
     info: String,
     icon: String,
     url: String,
-    active: Boolean
+    active: Boolean,
+    available: Schema.Types.Mixed,
+    waitToShare: Schema.Types.Mixed
+
 });
 
 module.exports = mongoose.model('Thing', ThingSchema);

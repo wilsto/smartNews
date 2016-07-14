@@ -4,21 +4,22 @@
 
 'use strict';
 
-var Article = require('./article.model');
+var log = require('./log.model');
 
 exports.register = function(socket) {
-    Article.schema.post('save', function(doc) {
+    log.schema.post('save', function(doc) {
+        console.log('SAVE !!!!');
         onSave(socket, doc);
     });
-    Article.schema.post('remove', function(doc) {
+    log.schema.post('remove', function(doc) {
         onRemove(socket, doc);
     });
 }
 
 function onSave(socket, doc, cb) {
-    socket.emit('article:save', doc);
+    socket.emit('log:save', doc);
 }
 
 function onRemove(socket, doc, cb) {
-    socket.emit('article:remove', doc);
+    socket.emit('log:remove', doc);
 }

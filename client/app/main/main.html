@@ -13,34 +13,39 @@
             </div>
         </header>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Pro</h3>
                 <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-                    <li><a href="/{{thing.url}}?type=Pro" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge pull-right">112</span></a></li>
+                    <li><a href="/{{thing.url}}?type=Pro" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.pro > 0}">{{thing.available.pro}}</span></a></li>
                 </ul>
             </div>
-        </div>
-        <br>
-        <br>
-        <div class="row">
-            <div class="col-lg-12">
+            <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Perso</h3>
                 <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-                    <li><a href="/{{thing.url}}?type=Perso" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge pull-right">112</span></a></li>
+                    <li><a href="/{{thing.url}}?type=Perso" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.perso > 0}">{{thing.available.perso}}</span></a></li>
                 </ul>
             </div>
         </div>
         <br>
-        <br>
-        <br>
-        <form class="thing-form">
-            <label>Add New Focus</label>
-            <p class="input-group">
-                <input type="text" class="form-control" placeholder="Add a new focus here." ng-model="newThing">
-                <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="addThing()">Add</button>
+        <div class="col-xs-12 col-lg-12">
+            <h3>Last Log</h3>
+            <ul ng-repeat="log in logs">
+                <li>
+                    <span ng-if="log.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
+                    <span ng-if="log.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>
+                    <span>{{log.date | date:'MMM d, y HH:mm'}} </span>
+                    <span tooltip="{{log.origin}}" style="font-weight:bold"> {{log.action}} </span> {{log.label}}
+                </li>
+            </ul>
+        </div>
+        <!--         <form class="thing-form">
+    <label>Add New Focus</label>
+    <p class="input-group">
+        <input type="text" class="form-control" placeholder="Add a new focus here." ng-model="newThing">
+        <span class="input-group-btn">
+<button type="submit" class="btn btn-primary" ng-click="addThing()">Add</button>
       </span>
-            </p>
-        </form>
+    </p>
+</form> -->
     </div>
 </div>

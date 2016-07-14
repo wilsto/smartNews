@@ -35,3 +35,11 @@
     background: #B2D5E0!important;
     padding: 10px;
 }
+
+.badge-success {
+    background: #3FBF5E!important;
+}
+
+.badge-default {
+    background: #FFF;
+}

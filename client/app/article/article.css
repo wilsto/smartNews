@@ -1,0 +1,19 @@
+.articleImg {
+    width: 150px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.panel-Lightprimary {
+    background: rgba(178, 218, 224, 0.4);
+    /* background: #B2D5E0; */
+    font-weight: bold;
+}
+
+.label-Lightsuccess {
+    background: rgba(72, 190, 64, 0.5);
+}
+
+.label-LightDefault {
+    background: rgba(112, 126, 142, 0.3);
+}

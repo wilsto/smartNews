@@ -2,7 +2,6 @@
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
 auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-auditLog.addTransport("console");
 //  method is logEvent( actor, origin, action, label, object, description ) 
 
 var request = require('request');
@@ -17,22 +16,27 @@ var articles = [];
 var state;
 
 var refreshFeeds = function(req, res) {
-    console.log('refreshFeeds in progress');
+    console.log('(-- refreshFeeds start ');
     Feed.find().exec().then(function(feeds) {
         async.map(feeds, refreshFeed, function(err, feeds) {
-            process.emit('analysNewArticles', feeds);
+            console.log('refreshFeeds end --)');
             if (conf.activePeriod !== -1) {
-                var now = new Date();
-                var bound = new Date();
-                bound.setMonth(bound.getMonth() - conf.activePeriod);
-                Article.remove({
-                    starred: false
-                }).where('date').lt(bound).exec().then(function(nbArticles) {
-                    auditLog.logEvent('Event', 'feed.controller.js - function refreshFeeds', 'Delete Old Articles', '', conf.activePeriod, nbArticles);
+                /*var now = new Date();
+var bound = new Date();
+bound.setMonth(bound.getMonth() - conf.activePeriod);
+Article.remove({
+    starred: false
+}).where('date').lt(bound).exec().then(function(nbArticles) {
+    auditLog.logEvent('Event', 'feed.controller.js - function refreshFeeds', 'Delete Old Articles', nbArticles.result.nb, '', conf.activePeriod + ' months');
+});
+*/
+                if (res) {
                     res.json(feeds);
-                });
+                }
             } else {
-                res.json(feeds);
+                if (res) {
+                    res.json(feeds);
+                }
             }
         });
     });
@@ -42,7 +46,7 @@ exports.refreshFeeds = refreshFeeds;
 
 // Feeds functions
 var timer = setInterval(function() {
-    console.log('refreshFeeds auto');
+    console.log('*** refreshFeeds auto - 5 min');
     var req = {};
     req.query = {};
     var res = {};
@@ -142,19 +146,21 @@ function refreshFeed(feed, callBack) {
     var state = 0;
     var req = request(feed.url);
     var feedParser = new FeedParser();
+    console.log(' -- Feed :', feed.url);
+
     req.on('error', function(error) {
-        auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - req.on(error', 'Detect Error', '', feed.url, error);
+        auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - req.on(error', 'Detect Error', feed.url, '', '');
         callBack(error);
     });
     req.on('response', function(res) {
         var stream = this;
         if (res.statusCode !== 200) {
-            auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - req.on(response', 'Detect Error', '', feed.url, res);
+            auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - req.on(response', 'Detect Error', feed.url, '', '');
         }
         stream.pipe(feedParser);
     });
     feedParser.on('error', function(error) {
-        auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - feedParser.on', 'Detect Error', '', feed.url, error);
+        auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - feedParser.on', 'Detect Error', feed.url, '', '');
         callBack(error);
     });
     feedParser.on('meta', function(meta) {
@@ -172,6 +178,7 @@ function refreshFeed(feed, callBack) {
 
                     Article.findOrCreate({ guid: candidate.guid }, candidate, function(err, article, created) {
                         if (created) {
+                            process.emit('AnalyseNewArticles');
                             auditLog.logEvent('Event', 'feed.controller.js - function refreshFeed', 'New Article', feed.name + ' : ' + article.title, article.guid, article.title);
                         } else {
                             //console.log('already Exist :' + article.guid)
@@ -236,6 +243,7 @@ function extractArticle(item, feed) {
         link: item.link,
         guid: item.guid,
         _feed: feed._id,
+        type: feed.type,
         read: false,
         starred: false
     });

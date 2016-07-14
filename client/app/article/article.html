@@ -38,11 +38,6 @@
                         <a ng-click="changeAnalysButton()" ng-class="{'btn-success' : btnanalysArr === 0, 'btn-warning' :btnanalysArr === 1, 'btn-default' :btnanalysArr === 2}" class="btn"><u>Analys  </u>: {{btntxt[btnanalysArr]}}</a>
                     </div>
                 </div>
-                <!--                 <div class="col-xs-2 hidden-xs">
-    <select id="search-feed" name="searchFeed" ng-model="search.feed" ng-options="feed.name for feed in feeds" class="input-sm form-control" style="width: 100%;height:35px">
-        <option value="">-- select feed --</option>
-    </select>
-</div> -->
                 <div class="col-xs-3 hidden-xs">
                     <button style="float: right" class="btn btn-default" ng-click="searchText()"> <i class="glyphicon glyphicon-search"></i> </button>
                     <div style="overflow: hidden; padding-right: .5em;">
@@ -54,26 +49,31 @@
     </div>
     <p ng-show="articles.length == 0">No such articles.</p>
     <div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
-        <div ng-repeat="article in articles" class="panel panel-default" ng-class="{'panel-success':article.score > 19}">
-            <div ng-click="ensureRead($index)" class="panel-heading">
-                <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
-      <input type="checkbox" ng-model="selectedArticles[article._id]" ng-change='changeSelected()'>
-      <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>     
-       <span><a ng-click="readOne($index)" ><i ng-class="(article.read === true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
-      <small class="pull-right article-tb">
-      <span>{{article.date | timeago}}</span>
-      <span>
-        <span class="label label-success" ng-show="article.score>0">{{article.score}}</span>
-        <span class="label label-info">{{article.author}}</span>
-      </span>
-      <span><a href="{{article.link}}" target="new"><i class="glyphicon glyphicon-globe"></i></a></span>
+        <div ng-repeat="article in articles" class="panel" ng-class="{'panel-Lightprimary':article.score > 19}">
+            <div ng-click="ensureRead($index)" class="panel-heading" style="height:120px">
+                <div class="pull-left" style="margin-right:10px">
+                    <img class="articleImg" src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt="">
+                </div>
+                <div style="padding-left:10px;overflow:hidden;">
+                    <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
+                  <input type="checkbox" ng-model="selectedArticles[article._id]" ng-change='changeSelected()'>
+                  <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>     
+                   <span><a ng-click="readOne($index)" ><i ng-class="(article.read === true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
+                  <small class="pull-right article-tb">
+                  <span>{{article.date | timeago}}</span>
+                  <span>
+                    <span class="label label-success" ng-show="article.score>0">{{article.score}}</span>
+                    <span class="label label-info">{{article.author}}</span>
+                  </span>
+                  <span><a href="{{article.link}}" target="new"><i class="glyphicon glyphicon-globe"></i></a></span>
 
 
-      </small>
-      </h4>
-                <div>
-                    <span class="label label-word label-info">{{article._feed.name}}</span>
-                    <div class="label label-word label-default" ng-class="{' label-success' :term.score>0}" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 10">{{term.term}} : {{term.score}}</div>
+                  </small>
+                  </h4>
+                    <div>
+                        <span class="label label-word label-info">{{article._feed.name}}</span>
+                        <div class="label label-word " ng-class="(term.score>0) ? 'label-Lightsuccess' :'label-LightDefault'" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 10">{{term.term}} : {{term.score}}</div>
+                    </div>
                 </div>
             </div>
             <div id="article-{{$index}}" class="panel-collapse collapse">

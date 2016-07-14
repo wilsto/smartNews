@@ -23,7 +23,6 @@ var getArticles = function(req, res) {
     if (typeof req.query.title !== 'undefined') {
         query.title = new RegExp(req.query.title, "i");
     }
-    console.log('query', query);
     /*    Article.find(query, null, {
             skip: req.query.after,
             limit: 50
