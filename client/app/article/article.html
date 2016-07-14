@@ -59,7 +59,7 @@
                 <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
       <input type="checkbox" ng-model="selectedArticles[article._id]" ng-change='changeSelected()'>
       <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>     
-       <span><a href="" ng-click="read($index)" ng-class="(article.read == false) ? 'selected' : 'unselected'"><i ng-class="(article.read == true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
+       <span><a ng-click="readOne($index)" ><i ng-class="(article.read === true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
       <small class="pull-right article-tb">
       <span>{{article.date | timeago}}</span>
       <span>

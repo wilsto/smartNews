@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
+var findOrCreate = require('mongoose-findorcreate')
 
 var ArticleSchema = mongoose.Schema({
     _feed: {
@@ -36,5 +37,7 @@ var ArticleSchema = mongoose.Schema({
     analysed: Boolean,
     shared: Boolean
 });
+
+ArticleSchema.plugin(findOrCreate);
 
 module.exports = mongoose.model('Article', ArticleSchema);

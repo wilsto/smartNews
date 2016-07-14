@@ -1,4 +1,10 @@
 'use strict';
+var auditLog = require('audit-log');
+var config = require('../../config/environment');
+auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
+auditLog.addTransport("console");
+//  method is logEvent( actor, origin, action, label, object, description ) 
+
 var request = require('request');
 var getPage = require('summarizer').getPage;
 var extractor = require('unfluff');
@@ -21,11 +27,13 @@ var articleAnalys = function(req, res) {
         allwords = words;
     });
 
-    Article.find({
-            terms: {
-                $exists: false
-            }
-        },
+    var articleQuery = (req && req.query.all) ? {} : {
+        terms: {
+            $exists: false
+        }
+    };
+    console.log('articleQuery', articleQuery);
+    Article.find(articleQuery,
         function(err, articles) {
             if (err) {
                 return handleError(res, err);
@@ -34,6 +42,7 @@ var articleAnalys = function(req, res) {
             async.map(articles, keywordAnalyse, function(err, words) {
                 console.log(' End of Analysis ...##########...');
                 if (res) {
+                    console.log('res', res);
                     return res.status(200).json(wordsList);
                 }
             });
@@ -45,12 +54,29 @@ process.on('analysNewArticles', function(data) {
     articleAnalys(undefined, undefined);
 });
 
+// articleAnalys toutes les heures
+var timer = setInterval(function() {
+    console.log('articleAnalys auto');
+    var req = {};
+    req.query = {};
+    var res = undefined;
+    articleAnalys(req, res);
+}, 1 * 60 * 1000);
+
+
+// articleAnalys toutes les heures
+var timer = setInterval(function() {
+    console.log('articleAnalys auto');
+    var req = {};
+    req.query = { all: true };
+    var res = undefined;
+    articleAnalys(req, res);
+}, 60 * 60 * 1000);
+
 // Get list of articleAnalysiss
 exports.index = articleAnalys;
 
 function keywordAnalyse(article, callback) {
-
-
     getPage(article.link).then(function(data) {
 
         // fréquence des mots 
@@ -175,7 +201,6 @@ function calculateScoreArticle(updatedArticle) {
 
     //console.log('********** terms');
     var terms = updatedArticle.topics.concat(updatedArticle.bigWords);
-
 
     // on regroupe par mot clé
     var groups = _(terms).groupBy('term');

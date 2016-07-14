@@ -44,6 +44,7 @@ angular.module('jarvisApp')
                     params: dataFilter
                 }).success(function(data) {
                     $scope.articles = $scope.articles.concat(data);
+                    console.log('$scope.articles ', $scope.articles);
                     $scope.busy = false;
                 }).error(function() {
                     $scope.articles = [];
@@ -147,16 +148,15 @@ angular.module('jarvisApp')
             });
         });
 
-        $scope.read = function(id) {
-            console.log('id2', id);
+        $scope.readOne = function(id) {
+            console.log('id', id);
             $scope.articles[id].read = !$scope.articles[id].read;
-            $scope.update(id, $scope.articles[id]._id);
+            $scope.update(id);
         };
 
         $scope.ensureRead = function(id) {
-            console.log('id', id);
             if ($scope.articles[id].read === false) {
-                $scope.read(id, $scope.articles[id]._id);
+                $scope.readOne(id);
             }
         };
 
@@ -171,13 +171,11 @@ angular.module('jarvisApp')
             $scope.update(id);
         };
 
-        $scope.update = function(id, _id) {
-            console.log('id3', _id);
-            console.log('article', $scope.articles[id]);
+        $scope.update = function(id) {
             $http({
                 method: 'POST',
                 data: $scope.articles[id],
-                url: '/api/articles/' + _id
+                url: '/api/articles/' + $scope.articles[id]._id
             });
         };
 

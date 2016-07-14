@@ -28,3 +28,10 @@
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
+
+.fullTitle {
+    display: block;
+    width: 100%;
+    background: #B2D5E0!important;
+    padding: 10px;
+}
