@@ -5,9 +5,11 @@ var mongoose = require('mongoose'),
 
 var WordSchema = new Schema({
     term: String,
-    active: Boolean,
     like: Number,
-    interestCenters: Schema.Types.Mixed
+    words: [],
+    type: String,
+    score: Number,
+    active: Boolean
 });
 
 module.exports = mongoose.model('Word', WordSchema);

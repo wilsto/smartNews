@@ -17,7 +17,7 @@ var state;
 
 var refreshFeeds = function(req, res) {
     console.log('(-- refreshFeeds start ');
-    Feed.find().exec().then(function(feeds) {
+    Feed.find({ active: true }).exec().then(function(feeds) {
         async.map(feeds, refreshFeed, function(err, feeds) {
             console.log('refreshFeeds end --)');
             if (conf.activePeriod !== -1) {
@@ -30,13 +30,7 @@ Article.remove({
     auditLog.logEvent('Event', 'feed.controller.js - function refreshFeeds', 'Delete Old Articles', nbArticles.result.nb, '', conf.activePeriod + ' months');
 });
 */
-                if (res) {
-                    res.json(feeds);
-                }
-            } else {
-                if (res) {
-                    res.json(feeds);
-                }
+
             }
         });
     });
@@ -51,7 +45,7 @@ var timer = setInterval(function() {
     req.query = {};
     var res = {};
     refreshFeeds(req, res);
-}, 5 * 60 * 1000);
+}, 47 * 60 * 1000);
 
 refreshFeeds();
 
@@ -60,7 +54,7 @@ var refreshOneFeed = function(req, res) {
     Feed.find({ _id: id }).exec().then(function(feeds) {
         articles = [];
         async.map(feeds, refreshFeed, function(err, feeds) {
-            process.emit('analysNewArticles', feeds);
+            process.emit('AnalyseNewArticles', { query: { _feed: id } });
             res.json(feeds);
         });
     });
@@ -121,6 +115,7 @@ exports.updateFeed = function(req, res) {
         url: req.body.url,
         type: req.body.type,
         language: req.body.language,
+        active: req.body.active,
     }
 
     Feed.findOneAndUpdate(query, update).exec().then(function(feed) {
@@ -178,8 +173,8 @@ function refreshFeed(feed, callBack) {
 
                     Article.findOrCreate({ guid: candidate.guid }, candidate, function(err, article, created) {
                         if (created) {
-                            process.emit('AnalyseNewArticles');
                             auditLog.logEvent('Event', 'feed.controller.js - function refreshFeed', 'New Article', feed.name + ' : ' + article.title, article.guid, article.title);
+                            process.emit('AnalyseNewArticles');
                         } else {
                             //console.log('already Exist :' + article.guid)
                         }

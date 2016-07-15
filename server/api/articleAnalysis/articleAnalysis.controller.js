@@ -2,7 +2,7 @@
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
 auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-auditLog.addTransport("console");
+//auditLog.addTransport("console");
 //  method is logEvent( actor, origin, action, label, object, description ) 
 
 var request = require('request');
@@ -17,7 +17,6 @@ var Article = require('../article/article.model');
 var Thing = require('../thing/thing.model');
 var Word = require('../word/word.model');
 var Parser = require('../../NLTK/parser');
-var wordsList = [];
 var allwords = [];
 
 var articleAnalys = function(req, res) {
@@ -28,66 +27,68 @@ var articleAnalys = function(req, res) {
         allwords = words;
     });
 
-    var articleQuery = (req && req.query.all) ? {} : {
-        score: {
-            $exists: false
-        }
-    };
+    var articleQuery = (req && req.query) ? req.query : {};
+
     Article.find(articleQuery,
         function(err, articles) {
-            if (err) {
-                return handleError(res, err);
-            }
             console.log('[-- Start Article Analysis');
             console.log(' -- ArticleToAnalyse : ', articles.length);
             async.map(articles, keywordAnalyse, function(err, words) {
                 process.emit('CountArticles');
+                process.emit('UpdateScoreWords');
                 console.log('--] End Article Analysis');
-
-                var articleQuery = { starred: true, read: false, type: 'Pro' };
-                Article.find(articleQuery,
-                    function(err, articles) {
-                        Thing.update({ name: 'Articles' }, { $set: { 'available.pro': articles.length } }, function(err, results) {
-                            console.log('ArtcileCount Pro Updated', results);
-                        });
-                    });
-                var articleQuery2 = { starred: true, read: false, type: 'Perso' };
-                Article.find(articleQuery2,
-                    function(err, articles) {
-                        Thing.update({ name: 'Articles' }, { $set: { 'available.perso': articles.length } }, function(err, results) {
-                            console.log('ArtcileCount Perso Updated', results);
-                        });
-                    });
-
-                if (res) {
-                    return res.status(200).json(wordsList);
-                }
             });
         });
 };
 
-process.on('AnalyseNewArticles', function() {
-    articleAnalys(undefined, undefined);
+process.on('AnalyseNewArticles', function(req) {
+    articleAnalys(req, undefined);
 });
 
-
+process.on('CountArticles', function() {
+    var articleQuery = { starred: true, read: false, type: 'Pro' };
+    Article.find(articleQuery,
+        function(err, articles) {
+            Thing.update({ name: 'Articles' }, { $set: { 'available.pro': articles.length } }, function(err, results) {
+                console.log('ArticleCount Pro Updated', articles.length);
+            });
+        });
+    var articleQuery2 = { starred: true, read: false, type: 'Perso' };
+    Article.find(articleQuery2,
+        function(err, articles) {
+            Thing.update({ name: 'Articles' }, { $set: { 'available.perso': articles.length } }, function(err, results) {
+                console.log('ArticleCount Perso Updated', articles.length);
+            });
+        });
+});
 
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
     console.log('*** Article Analyse Automatic -- Simple 1 min');
-    var req = {};
-    req.query = {};
+    var req = {
+        query: {
+            score: {
+                $exists: false
+            }
+        }
+    };
     articleAnalys(req, undefined);
 }, 60 * 1000);
 
+articleAnalys({
+    query: {
+        score: {
+            $exists: false
+        }
+    }
+}, undefined);
 
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('*** Article Analyse Automatic -- Full 60 min');
-    var req = {};
-    req.query = { all: true };
-    articleAnalys(req, undefined);
-}, 60 * 60 * 1000);
+        console.log('*** Article Analyse Automatic -- Full 60 min');
+        articleAnalys(undefined, undefined);
+    },
+    60 * 60 * 1000);
 
 // Get list of articleAnalysiss
 exports.index = articleAnalys;
@@ -110,6 +111,7 @@ function keywordAnalyse(article, callback) {
         };
         var updatedArticle = {
             title: article.title,
+            type: article.type,
             summary: article.summary || data.summary,
             softTitle: data.softTitle,
             image: data.image,
@@ -134,7 +136,8 @@ function keywordAnalyse(article, callback) {
             //console.log('updatedArticle', updatedArticle.title);
             updatedArticle.text = (articleReadable && articleReadable.content.length > 0) ? articleReadable.content : data.text;
             Article.findOneAndUpdate(query, updatedArticle).exec().then(function(article) {
-                wordsList.push(article);
+                process.emit('CountArticles');
+                process.emit('UpdateWords', article);
                 callback(null, article);
             });
         });
@@ -142,7 +145,6 @@ function keywordAnalyse(article, callback) {
 
     }, function(error) { // error
         console.log('article.link', article.link);
-        // console.error
         console.log('error', error);
         callback(null, article);
     });
@@ -215,7 +217,7 @@ function calculateScoreArticle(updatedArticle) {
     }), undefined);
 
     //console.log('********** terms');
-    var terms = updatedArticle.topics.concat(updatedArticle.bigWords);
+    var terms = updatedArticle.topics.concat(updatedArticle.bigWords).concat(updatedArticle.keywords).concat(updatedArticle.tags).concat(updatedArticle.topics).concat(wordsinTitle);
 
     // on regroupe par mot clé
     var groups = _(terms).groupBy('term');
@@ -230,18 +232,22 @@ function calculateScoreArticle(updatedArticle) {
                 }, 0),
                 score: _(g).reduce(function(m, x) {
                     var thisword = _.filter(allwords, function(word) {
-                        return word.term === x.term;
+                        return word.term === x.term && word.type === updatedArticle.type;
                     })
-                    return (thisword.length > 0) ? m + (x.count * thisword[0].like) : m;
+                    return (thisword.length > 0) ? m + (x.count * (thisword[0].like || 0)) : m;
                 }, 0)
             };
         })
         .value();
 
     groupWords = _.sortBy(groupWords, function(o) {
-        return -o.score;
+        return [-o.score, -o.count];
     });
     updatedArticle.terms = groupWords;
+    delete updatedArticle.bigWords;
+    delete updatedArticle.keywords;
+    delete updatedArticle.tags;
+    delete updatedArticle.topics;
 
     score = _.reduce(groupWords, function(m, x) {
         return m + parseInt(x.score);

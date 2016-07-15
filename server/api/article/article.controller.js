@@ -81,6 +81,7 @@ exports.updateArticle = function(req, res) {
         read: req.body.read,
     }
     Article.findOneAndUpdate(query, update).exec().then(function(article) {
+        process.emit('CountArticles');
         res.status(200).send(article);
     });
 }

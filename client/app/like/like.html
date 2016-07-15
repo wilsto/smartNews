@@ -14,12 +14,14 @@
                 <div class="col-xs-7">
                     <div class="btn-group btn-group-sm pull-right">
                         <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
-                        <button type="button" ng-click="analyse()" class="btn btn-primary"><i class="glyphicon glyphicon-tags"></i> Analyse</button>
-                        <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Read all</button>
                     </div>
                 </div>
             </div>
         </form>
+    </div>
+    <div class="btn-group" style="padding-bottom:20px;">
+        <a ng-click="typeFilter = 'Pro'" class="btn" ng-class=" (typeFilter === 'Pro')? 'btn-primary' : 'btn-default' ">Pro</a>
+        <a ng-click="typeFilter = 'Perso'" ng-class=" (typeFilter === 'Perso')? 'btn-primary' : 'btn-default' " class="btn">Perso</a>
     </div>
     <div class="btn-group" style="padding-bottom:20px;float: right">
         <a ng-click="buttonFilter = 'All'" class="btn" ng-class=" (buttonFilter === 'All')? 'btn-primary' : 'btn-default' ">All</a>
@@ -32,11 +34,11 @@
     <br>
     <br>
     <div id="table-word">
-        <div class="likeWord" ng-repeat="word in words | filter:search.text  | filter: myFilterWord" ng-class="{'bg-success':word.like,'bg-danger':word.like===0}">
+        <div class="likeWord" ng-repeat="word in words | filter:{type:typeFilter}| filter:search.text  | filter: myFilterWord" ng-class="{'bg-success':word.like,'bg-danger':word.like===0}">
             <h3 class="">{{word.term}} <span class="badge">{{word.score}}</span></h3>
             <button class="btn btn-xs" ng-click="like(word,0, $index)" ng-class="{'btn-danger':word.like===0}"><i class="glyphicon glyphicon-thumbs-down"></i></button>
             <button class="btn btn-xs" ng-click="like(word,1, $index)" ng-class="{'btn-success':word.like}"><i class="glyphicon glyphicon-thumbs-up"></i></button>
-            <small class="text-muted">{{word.word}} </small>
+            <small class="text-muted">{{word.words}} </small>
         </div>
     </div>
 </div>

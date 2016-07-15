@@ -24,6 +24,10 @@
                     <form role="form" name="editFeedForm">
                         <input type="hidden" />
                         <div class="form-group">
+                            <label for="editName" size="30">Active</label>
+                            <input id="editactive" type="checkbox" name="editActive" ng-model="editFeed.active" />
+                        </div>
+                        <div class="form-group">
                             <label for="editName" size="30">Name</label>
                             <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editFeed.name" class="form-control" />
                         </div>
@@ -85,7 +89,7 @@
                     <td> <a href="{{feed.url}}" target="new" class="m_title">{{feed.name}}</a> <small class="text-muted pull-right">{{feed.url}}</small>
                     </td>
                     <td class="text-center"><span class="flag-icon" ng-class="{'flag-icon-us':feed.language==='us-US','flag-icon-fr':feed.language==='fr-FR'}"></span></td>
-                    <td class="text-center"><span ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></td>
+                    <td class="text-center"><span ng-if="!feed.active" class="label label-danger">Desac.</span><span ng-if="feed.active" ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></td>
                     <td> <span>{{feed.lastChecked | timeago}}</span></td>
                     <td class="text-center"> <span class="badge">{{feed.lastFetchedNb}}</span></td>
                     <td class="text-center"><span class="badge">{{feed.lastOutdatedNb}}</span></td>

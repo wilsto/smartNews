@@ -12,7 +12,8 @@ var FeedSchema = new Schema({
     lastFetchedNb: Number,
     lastErrorNb: Number,
     lastOutdatedNb: Number,
-    state: String
+    state: String,
+    active: Boolean
 });
 
 module.exports = mongoose.model('Feed', FeedSchema);
