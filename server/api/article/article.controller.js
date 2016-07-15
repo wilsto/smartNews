@@ -9,6 +9,9 @@ var getArticles = function(req, res) {
     if (typeof req.query.after === 'undefined') {
         req.query.after = 0;
     }
+    if (typeof req.query.area !== 'undefined') {
+        query.type = req.query.area;
+    }
     if (typeof req.query.read !== 'undefined') {
         query.read = req.query.read;
     }
@@ -23,17 +26,7 @@ var getArticles = function(req, res) {
     if (typeof req.query.title !== 'undefined') {
         query.title = new RegExp(req.query.title, "i");
     }
-    /*    Article.find(query, null, {
-            skip: req.query.after,
-            limit: 50
-        }).sort({
-            score: -1,
-            date: -1
-        }).populate('_feed', 'name').exec().then(function(articles) {
-            console.log('articles', articles);
-            articles.sort(compareArticles);
-            res.json(articles);
-        });*/
+    console.log('query', query);
     var after = parseInt(req.query.after);
     Article.find(query).skip(after).limit(50).sort({
         score: -1,
@@ -51,6 +44,9 @@ exports.countArticles = function(req, res) {
 
     if (typeof req.query.after === 'undefined') {
         req.query.after = 0;
+    }
+    if (typeof req.query.area !== 'undefined') {
+        query.type = req.query.area;
     }
     if (typeof req.query.read !== 'undefined') {
         query.read = req.query.read;

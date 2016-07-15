@@ -20,18 +20,6 @@ var refreshFeeds = function(req, res) {
     Feed.find({ active: true }).exec().then(function(feeds) {
         async.map(feeds, refreshFeed, function(err, feeds) {
             console.log('refreshFeeds end --)');
-            if (conf.activePeriod !== -1) {
-                /*var now = new Date();
-var bound = new Date();
-bound.setMonth(bound.getMonth() - conf.activePeriod);
-Article.remove({
-    starred: false
-}).where('date').lt(bound).exec().then(function(nbArticles) {
-    auditLog.logEvent('Event', 'feed.controller.js - function refreshFeeds', 'Delete Old Articles', nbArticles.result.nb, '', conf.activePeriod + ' months');
-});
-*/
-
-            }
         });
     });
 };
@@ -52,7 +40,6 @@ refreshFeeds();
 var refreshOneFeed = function(req, res) {
     var id = req.params.id;
     Feed.find({ _id: id }).exec().then(function(feeds) {
-        articles = [];
         async.map(feeds, refreshFeed, function(err, feeds) {
             process.emit('AnalyseNewArticles', { query: { _feed: id } });
             res.json(feeds);
@@ -71,7 +58,7 @@ exports.getFeed = function(req, res) {
 };
 
 exports.getFeeds = function(req, res) {
-    Feed.find().exec().then(function(feeds) {
+    Feed.find().sort({ type: 1, subarea: 1, name: 1 }).exec().then(function(feeds) {
         res.json(feeds);
     });
 };
@@ -114,6 +101,7 @@ exports.updateFeed = function(req, res) {
         name: req.body.name,
         url: req.body.url,
         type: req.body.type,
+        subarea: req.body.subarea,
         language: req.body.language,
         active: req.body.active,
     }
@@ -139,6 +127,7 @@ function refreshFeed(feed, callBack) {
     var errors = 0;
     var outdated = 0;
     var state = 0;
+    articles = [];
     var req = request(feed.url);
     var feedParser = new FeedParser();
     console.log(' -- Feed :', feed.url);
@@ -169,12 +158,11 @@ function refreshFeed(feed, callBack) {
             var candidate = extractArticle(item, feed);
             if (checkValues(candidate)) {
                 if (checkPeriod(candidate)) {
-                    //articles.push(candidate);
+                    articles.push(candidate);
 
                     Article.findOrCreate({ guid: candidate.guid }, candidate, function(err, article, created) {
                         if (created) {
                             auditLog.logEvent('Event', 'feed.controller.js - function refreshFeed', 'New Article', feed.name + ' : ' + article.title, article.guid, article.title);
-                            process.emit('AnalyseNewArticles');
                         } else {
                             //console.log('already Exist :' + article.guid)
                         }

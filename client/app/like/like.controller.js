@@ -37,7 +37,7 @@ angular.module('jarvisApp')
                 case 'Interested':
                     return item.like === 1;
                 case 'Not Interested':
-                    return item.like === 0;
+                    return item.like === -1;
                 default:
                     return item;
             }

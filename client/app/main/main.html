@@ -16,13 +16,13 @@
             <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Pro</h3>
                 <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-                    <li><a href="/{{thing.url}}?type=Pro" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.pro > 0}">{{thing.available.pro}}</span></a></li>
+                    <li><a href="/{{thing.url}}/Pro" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.pro > 0}">{{thing.available.pro}}</span></a></li>
                 </ul>
             </div>
             <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Perso</h3>
                 <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-                    <li><a href="/{{thing.url}}?type=Perso" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.perso > 0}">{{thing.available.perso}}</span></a></li>
+                    <li><a href="/{{thing.url}}/Perso" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.perso > 0}">{{thing.available.perso}}</span></a></li>
                 </ul>
             </div>
         </div>

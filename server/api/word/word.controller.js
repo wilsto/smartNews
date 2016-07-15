@@ -26,7 +26,7 @@ process.on('UpdateWords', function(article) {
                 if (err) {
                     console.log('err', err);
                 }
-                console.log('create term : ', created.type + ' - ' + created.term);
+                // console.log('create term : ', created.type + ' - ' + created.term);
             });
         } else {
             Word.find({ term: articleTerm.term, type: article.type }, function(err, dbterm) {
@@ -44,7 +44,7 @@ process.on('UpdateWords', function(article) {
                     if (err) {
                         console.log('err', err);
                     }
-                    console.log('update term : ', updated.type + ' - ' + updated.term);
+                    //console.log('update term : ', updated.type + ' - ' + updated.term);
                 });
             });
         }

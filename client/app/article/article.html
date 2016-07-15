@@ -1,7 +1,6 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="col-md-12">
-    <div class="loading-jarvis
-" ng-show="busy">
+    <div class="loading-jarvis" ng-show="busy">
         <div class="loading-text">
             <div class="spinner">
                 <div class="rect1"></div>
@@ -14,24 +13,27 @@
         </div>
     </div>
     <div class="page-header">
-        <h1>{{type | capitalize}} articles <small> <span class="badge">{{articles.length }} / {{nbarticles}}</span></small>
-          <div class="btn-group btn-group-sm pull-right" >
-          <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Scan</button>
-          <button type="button" ng-click="analyse()" class="btn btn-primary"><i class="glyphicon glyphicon-tags"></i> Analyse</button>
-          <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Mark as Read</button>
-        </div>
-</h1>
+        <h1>{{area | capitalize}} <small>Articles  <span class="badge">{{articles.length }} / {{nbarticles}}</span></small>
+            <div class="btn-group btn-group-sm pull-right">
+                <button type="button" ng-click="filterSubarea = ''" class="btn btn-primary">All</button>
+                <button ng-repeat="subarea in subareas" type="button" ng-click="filterSubarea = subarea" class="btn btn-primary">{{subarea}}</button>
+             </div>
+        </h1>
     </div>
     <div id="form-feed">
         <form role="form" name="searchForm" class="form-horizontal">
             <div class="form-group">
-                <div class="col-xs-2">
+                <div class="col-xs-4">
                     <input type="checkbox" ng-model="selectedAll" ng-change='changeSelectedAll()' style="margin-left: 16px;"> Select All
+                    <div class="btn-group btn-group-sm pull-right">
+                        <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                        <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Mark as Read</button>
+                    </div>
                 </div>
                 <div class="col-xs-1">
                     Filters :
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-4">
                     <div class="btn-group">
                         <a ng-click="changeStarButton()" ng-class="{'btn-success' : btnstarArr === 0, 'btn-warning' :btnstarArr === 1, 'btn-default' :btnstarArr === 2}" class="btn"><u>Star  </u>: {{btntxt[btnstarArr]}}</a>
                         <a ng-click="changeReadButton()" ng-class="{'btn-success' : btnreadArr === 0, 'btn-warning' :btnreadArr === 1, 'btn-default' :btnreadArr === 2}" class="btn"><u>Read  </u>: {{btntxt[btnreadArr]}}</a>
@@ -49,7 +51,7 @@
     </div>
     <p ng-show="articles.length == 0">No such articles.</p>
     <div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
-        <div ng-repeat="article in articles" class="panel" ng-class="{'panel-Lightprimary':article.score > 19}">
+        <div ng-repeat="article in articles | filter:{'subarea':filterSubarea}" class="panel" ng-class="{'panel-Lightprimary':article.score > 19}">
             <div ng-click="ensureRead($index)" class="panel-heading" style="height:120px">
                 <div class="pull-left" style="margin-right:10px">
                     <img class="articleImg" src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt="">

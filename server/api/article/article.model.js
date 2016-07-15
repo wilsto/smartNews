@@ -23,6 +23,7 @@ var ArticleSchema = mongoose.Schema({
     link: String,
     text: String,
     type: String,
+    subarea: String,
     topics: Schema.Types.Mixed,
     bigWords: Schema.Types.Mixed,
     terms: Schema.Types.Mixed,

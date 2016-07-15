@@ -46,7 +46,9 @@
                                 <input type="radio" ng-model="editFeed.type" value="Perso"> Perso
                             </label>
                             <br/>
-                        </div>
+                            <label for="editsubarea" class="text-muted">SubArea</label>
+                            <input id="editsubarea" type="text" name="editsubarea" placeholder="Enter subarea" size="60" ng-model="editFeed.subarea" required="required" class="form-control" />
+                        </div>&nbsp;
                         <div class="form-group">
                             <label for="editName" size="30">Language</label>
                             <br>
@@ -72,8 +74,10 @@
         <table class="table table-condensed table-striped">
             <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>Name</th>
+                    <th>Type / SubArea</th>
+                    <th>Name
+                        <small class="text-muted"> <input id="showUrl" type="checkbox" name="showUrl" ng-model="showUrl" /> Show Url</small>
+                    </th>
                     <th>Lang.</th>
                     <th>State</th>
                     <th>Last checked</th>
@@ -85,15 +89,15 @@
             </thead>
             <tbody>
                 <tr ng-repeat="feed in feeds">
-                    <td class="text-center"><span ng-class="bpFeedType(feed.type)" class="label">{{feed.type}}</span></td>
-                    <td> <a href="{{feed.url}}" target="new" class="m_title">{{feed.name}}</a> <small class="text-muted pull-right">{{feed.url}}</small>
+                    <td class="text-left"><span ng-class="bpFeedType(feed.type)" class="label">{{feed.type}}</span> <span class="label label-default">{{feed.subarea}}</span></td>
+                    <td> <a href="{{feed.url}}" target="new" class="m_title">{{feed.name}}</a> <small class="text-muted pull-right" ng-if="showUrl">{{feed.url}}</small>
                     </td>
                     <td class="text-center"><span class="flag-icon" ng-class="{'flag-icon-us':feed.language==='us-US','flag-icon-fr':feed.language==='fr-FR'}"></span></td>
                     <td class="text-center"><span ng-if="!feed.active" class="label label-danger">Desac.</span><span ng-if="feed.active" ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></td>
                     <td> <span>{{feed.lastChecked | timeago}}</span></td>
-                    <td class="text-center"> <span class="badge">{{feed.lastFetchedNb}}</span></td>
-                    <td class="text-center"><span class="badge">{{feed.lastOutdatedNb}}</span></td>
-                    <td class="text-center"><span class="badge">{{feed.lastErrorNb}}</span></td>
+                    <td class="text-center text-muted"> <span ng-class="{'label label-info':feed.lastFetchedNb > 0}">{{feed.lastFetchedNb}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-default':feed.lastOutdatedNb > 0}">{{feed.lastOutdatedNb}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-danger':feed.lastErrorNb > 0}">{{feed.lastErrorNb}}</span></td>
                     <td>
                         <a href="" class="btn btn-xs btn-primary" ng-click="dispUpdate($index)" data-toggle="modal" data-target="#modFeed"> <i class="glyphicon glyphicon-pencil"></i></a>
                         <a href="/feeds" class="btn btn-xs btn-danger" ng-click="delete($index)"> <i class="glyphicon glyphicon-remove"></i></a>

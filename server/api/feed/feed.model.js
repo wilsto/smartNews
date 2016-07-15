@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 
 var FeedSchema = new Schema({
     type: String,
+    subarea: String,
     name: String,
     language: String,
     url: String,

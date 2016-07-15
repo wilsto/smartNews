@@ -1,7 +1,10 @@
 'use strict';
 
 angular.module('jarvisApp')
-    .controller('ArticleCtrl', function($scope, $http) {
+    .controller('ArticleCtrl', function($scope, $http, $stateParams) {
+
+        $scope.area = $stateParams.area;
+
         $scope.articles = [];
         $scope.buttonFilter = 'starredunread';
         $scope.selectedAll = false;
@@ -13,6 +16,7 @@ angular.module('jarvisApp')
             feed: null,
             text: null
         };
+        $scope.filterSubarea = '';
 
         $scope.btnstarArr = 0;
         $scope.btnreadArr = 1;
@@ -23,6 +27,7 @@ angular.module('jarvisApp')
             $scope.busy = true;
             var dataFilter = {
                 feed: $scope.search.feed,
+                area: $scope.area,
                 title: $scope.search.text,
                 starred: ($scope.btnstarArr === 0) ? true : ($scope.btnstarArr === 1) ? false : undefined,
                 read: ($scope.btnreadArr === 0) ? true : ($scope.btnreadArr === 1) ? false : undefined,
@@ -44,6 +49,7 @@ angular.module('jarvisApp')
                     params: dataFilter
                 }).success(function(data) {
                     $scope.articles = $scope.articles.concat(data);
+                    $scope.subareas = _.uniq(_.map($scope.articles, 'subarea'));
                     console.log('$scope.articles ', $scope.articles);
                     $scope.busy = false;
                 }).error(function() {

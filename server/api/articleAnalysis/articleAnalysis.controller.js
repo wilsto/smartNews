@@ -26,19 +26,32 @@ var articleAnalys = function(req, res) {
         }
         allwords = words;
     });
+    if (req === 'all') {
+        req = {
+            query: {}
+        };
+    }
 
-    var articleQuery = (req && req.query) ? req.query : {};
+    if (req === undefined) {
+        req = {
+            query: {
+                score: {
+                    $exists: false
+                }
+            }
+        };
+    }
 
-    Article.find(articleQuery,
-        function(err, articles) {
-            console.log('[-- Start Article Analysis');
-            console.log(' -- ArticleToAnalyse : ', articles.length);
-            async.map(articles, keywordAnalyse, function(err, words) {
-                process.emit('CountArticles');
-                process.emit('UpdateScoreWords');
-                console.log('--] End Article Analysis');
-            });
+    console.log('articleQuery', req.query);
+    Article.find(req.query).populate('_feed').exec().then(function(articles) {
+        console.log('[-- Start Article Analysis');
+        console.log(' -- ArticleToAnalyse : ', articles.length);
+        async.map(articles, keywordAnalyse, function(err, words) {
+            process.emit('CountArticles');
+            process.emit('UpdateScoreWords');
+            console.log('--] End Article Analysis');
         });
+    });
 };
 
 process.on('AnalyseNewArticles', function(req) {
@@ -65,28 +78,16 @@ process.on('CountArticles', function() {
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
     console.log('*** Article Analyse Automatic -- Simple 1 min');
-    var req = {
-        query: {
-            score: {
-                $exists: false
-            }
-        }
-    };
-    articleAnalys(req, undefined);
+
+    articleAnalys(undefined, undefined);
 }, 60 * 1000);
 
-articleAnalys({
-    query: {
-        score: {
-            $exists: false
-        }
-    }
-}, undefined);
+articleAnalys(undefined, undefined);
 
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
         console.log('*** Article Analyse Automatic -- Full 60 min');
-        articleAnalys(undefined, undefined);
+        articleAnalys('all', undefined);
     },
     60 * 60 * 1000);
 
@@ -109,9 +110,11 @@ function keywordAnalyse(article, callback) {
         var query = {
             _id: article._id
         };
+        // console.log('article._feed', article._feed.subarea);
         var updatedArticle = {
             title: article.title,
-            type: article.type,
+            type: article._feed.type,
+            subarea: article._feed.subarea,
             summary: article.summary || data.summary,
             softTitle: data.softTitle,
             image: data.image,
@@ -135,10 +138,9 @@ function keywordAnalyse(article, callback) {
         read(article.link, function(err, articleReadable, meta) {
             //console.log('updatedArticle', updatedArticle.title);
             updatedArticle.text = (articleReadable && articleReadable.content.length > 0) ? articleReadable.content : data.text;
-            Article.findOneAndUpdate(query, updatedArticle).exec().then(function(article) {
-                process.emit('CountArticles');
-                process.emit('UpdateWords', article);
-                callback(null, article);
+            Article.findOneAndUpdate(query, updatedArticle, { new: true }).exec().then(function(updarticle) {
+                process.emit('UpdateWords', updarticle);
+                callback(null, updarticle);
             });
         });
 
@@ -161,7 +163,7 @@ function calculateScoreArticle(updatedArticle) {
             return {
                 term: parsedTopic[0].stem,
                 word: parsedTopic[0].word,
-                count: 5
+                count: 3
             };
         }
     }), undefined);
@@ -172,7 +174,7 @@ function calculateScoreArticle(updatedArticle) {
             return {
                 term: parsedbigWord[0].stem,
                 word: parsedbigWord[0].word,
-                count: 5
+                count: 1
             };
         }
     }), undefined);
@@ -185,7 +187,7 @@ function calculateScoreArticle(updatedArticle) {
             return {
                 term: parsedtag[0].stem,
                 word: parsedtag[0].word,
-                count: 5
+                count: 3
             };
         }
     }), undefined);
@@ -198,7 +200,7 @@ function calculateScoreArticle(updatedArticle) {
             return {
                 term: parsedkeyword[0].stem,
                 word: parsedkeyword[0].word,
-                count: 5
+                count: 3
             };
         }
     }), undefined);
