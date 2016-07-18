@@ -34,7 +34,7 @@
     <br>
     <br>
     <div id="table-word">
-        <div class="likeWord" ng-repeat="word in words | filter:{type:typeFilter}| filter:search.text  | filter: myFilterWord" ng-class="{'bg-success':word.like,'bg-danger':word.like===0}">
+        <div class="likeWord" ng-repeat="word in words |orderBy:'term' | filter:{type:typeFilter}| filter:search.text  | filter: myFilterWord" ng-class="{'bg-success':word.like,'bg-danger':word.like===0}">
             <h3 class="">{{word.term}} <span class="badge">{{word.score}}</span></h3>
             <button class="btn btn-xs" ng-click="like(word,0, $index)" ng-class="{'btn-danger':word.like===0}"><i class="glyphicon glyphicon-thumbs-down"></i></button>
             <button class="btn btn-xs" ng-click="like(word,-1, $index)" ng-class="{'btn-success':word.like}"><i class="glyphicon glyphicon-thumbs-up"></i></button>

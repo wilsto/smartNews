@@ -21,6 +21,8 @@ var ArticleSchema = mongoose.Schema({
     tags: Schema.Types.Mixed,
     lang: String,
     link: String,
+    like: Number,
+    recommandation: Number,
     text: String,
     type: String,
     subarea: String,

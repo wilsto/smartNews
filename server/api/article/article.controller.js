@@ -75,6 +75,7 @@ exports.updateArticle = function(req, res) {
     var update = {
         starred: req.body.starred,
         read: req.body.read,
+        like: req.body.like
     }
     Article.findOneAndUpdate(query, update).exec().then(function(article) {
         process.emit('CountArticles');

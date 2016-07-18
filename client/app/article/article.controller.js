@@ -177,7 +177,14 @@ angular.module('jarvisApp')
             $scope.update(id);
         };
 
+        $scope.like = function(article, like, index) {
+            article.like = like;
+            $scope.update(index);
+        };
+
+
         $scope.update = function(id) {
+            console.log('$scope.articles[id]', $scope.articles[id]);
             $http({
                 method: 'POST',
                 data: $scope.articles[id],
