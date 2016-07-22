@@ -32,8 +32,14 @@
                             <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editFeed.name" class="form-control" />
                         </div>
                         <div class="form-group">
-                            <label for="editUrl">URL</label>
+                            <label for="editUrl">Feed URL</label>
                             <input id="editUrl" type="text" name="editUrl" placeholder="Enter URL" size="60" ng-model="editFeed.url" required="required" class="form-control" />
+                            <label for="editwebsite">website</label>
+                            <input id="editwebsite" type="text" name="editwebsite" placeholder="Enter website" size="60" ng-model="editFeed.website" required="required" class="form-control" />
+                            <label for="editimage">image</label>
+                            <input id="editimage" type="text" name="editimage" placeholder="Enter image" size="60" ng-model="editFeed.image" required="required" class="form-control" />
+                            <label for="editTwitter">Twitter</label>
+                            <input id="editTwitter" type="text" name="editTwitter" placeholder="Enter twitter" size="60" ng-model="editFeed.twitter" required="required" class="form-control" />
                         </div>&nbsp;
                         <div class="form-group">
                             <label for="editName" size="30">Type</label>
@@ -90,10 +96,13 @@
             <tbody>
                 <tr ng-repeat="feed in feeds">
                     <td class="text-left"><span ng-class="bpFeedType(feed.type)" class="label">{{feed.type}}</span> <span class="label label-default">{{feed.subarea}}</span></td>
-                    <td> <a href="{{feed.url}}" target="new" class="m_title">{{feed.name}}</a> <small class="text-muted pull-right" ng-if="showUrl">{{feed.url}}</small>
+                    <td> <img ng-src="{{feed.image || 'assets/images/noimagefound.jpg'}}" alt="" style="width:35px">
+                        <a href="{{feed.website}}" target="_blank" class="m_title">{{feed.name}}</a>
+                        <a href="https://twitter.com/{{feed.twitter}}" target="_blank"><small class="text-info pull-right" ng-if="feed.twitter">@{{feed.twitter}}</small></a>
+                        <br ng-if="feed.twitter" /><small class="text-muted pull-right" ng-if="showUrl">{{feed.url}}</small>
                     </td>
-                    <td class="text-center"><span class="flag-icon" ng-class="{'flag-icon-us':feed.language==='us-US','flag-icon-fr':feed.language==='fr-FR'}"></span></td>
-                    <td class="text-center"><span ng-if="!feed.active" class="label label-danger">Desac.</span><span ng-if="feed.active" ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></td>
+                    <td class="text-center"><span class="flag-icon" ng-class="{'flag-icon-us':feed.language.substr(0,2)==='en','flag-icon-fr':feed.language.substr(0,2)==='fr'}"></span></td>
+                    <td class="text-center"><a href="{{feed.url}}" target="_blank"><span ng-if="!feed.active" class="label label-danger">Desac.</span><span ng-if="feed.active" ng-class="bpFeedStatus(feed.state)" class="label">{{feed.state}}</span></a></td>
                     <td> <span>{{feed.lastChecked | timeago}}</span></td>
                     <td class="text-center text-muted"> <span ng-class="{'label label-info':feed.lastFetchedNb > 0}">{{feed.lastFetchedNb}}</span></td>
                     <td class="text-center text-muted"><span ng-class="{'label label-default':feed.lastOutdatedNb > 0}">{{feed.lastOutdatedNb}}</span></td>

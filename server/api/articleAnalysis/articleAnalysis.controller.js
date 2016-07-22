@@ -72,7 +72,7 @@ function recommandAnalyse(article, callback) {
     trainBatchSentences.push(trainSentence);
     callback(null, article);
 }
-articleRecommand();
+//articleRecommand();
 
 var articleAnalys = function(req, res) {
     Word.find(function(err, words) {

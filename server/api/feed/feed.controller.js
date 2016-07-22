@@ -100,6 +100,10 @@ exports.updateFeed = function(req, res) {
     var update = {
         name: req.body.name,
         url: req.body.url,
+        website: req.body.website,
+        twitter: req.body.twitter,
+        image: req.body.image,
+        author: req.body.author,
         type: req.body.type,
         subarea: req.body.subarea,
         language: req.body.language,
@@ -152,6 +156,7 @@ function refreshFeed(feed, callBack) {
     });
     feedParser.on('readable', function() {
         var stream = this;
+
         var item;
         //console.log('feed.name', feed.name);
         while (item = stream.read()) {
@@ -181,19 +186,27 @@ function refreshFeed(feed, callBack) {
         }
     });
     feedParser.on('end', function() {
+        var meta = this.meta;
 
-
-        var values = {
-            lastChecked: new Date(),
-            lastFetchedNb: articles.length,
-            lastErrorNb: errors,
-            lastOutdatedNb: outdated,
-            state: (state > 0) ? 'Incomplete' : 'OK'
-        };
-        Feed.findOneAndUpdate({
+        Feed.findOne({
             _id: feed._id
-        }, values).exec().then(function(feed) {
-            callBack(null, feed);
+        }).exec().then(function(feed) {
+            var values = {
+                lastChecked: new Date(),
+                lastFetchedNb: articles.length,
+                lastErrorNb: errors,
+                lastOutdatedNb: outdated,
+                website: (meta.link) ? meta.link : feed.website,
+                language: (meta.language) ? meta.language : feed.language,
+                author: (feed.author) ? meta.feed : meta.author,
+                image: (feed.image) ? feed.image : meta.image.url,
+                state: (state > 0) ? 'Incomplete' : 'OK'
+            };
+            Feed.findOneAndUpdate({
+                _id: feed._id
+            }, values).exec().then(function(feed) {
+                callBack(null, feed);
+            });
         });
     });
 }

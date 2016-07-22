@@ -25,6 +25,8 @@
     "mongoose-findorcreate": "^0.1.2",
     "morgan": "~1.7.0",
     "natural": "^0.2.1",
+    "nj-tinyurl": "^0.1.0",
+    "node-bitlyapi": "^0.4.0",
     "node-readability": "^2.1.5",
     "node-schedule": "^1.0.0",
     "passport": "~0.3.2",
