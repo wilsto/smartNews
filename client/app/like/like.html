@@ -2,43 +2,50 @@
 <div class="col-md-12">
     <div class="page-header">
         <h1> Words <small> <span class="badge">{{words.length}}</span></small></h1>
+        <div class="btn-group pull-right" style="top:-40px; ">
+            <a ng-click="typeFilter='Pro' " class="btn " ng-class=" (typeFilter==='Pro' )? 'btn-primary' : 'btn-default' ">Pro</a>
+            <a ng-click="typeFilter='Perso' " ng-class=" (typeFilter==='Perso' )? 'btn-primary' : 'btn-default' " class="btn ">Perso</a>
+        </div>
     </div>
-    <div id="form-feed">
-        <form role="form" name="searchForm" class="form-horizontal">
-            <div class="form-group">
-                <div class="col-xs-2 hidden-xs">
+    <div id="form-feed ">
+        <form role="form " name="searchForm " class="form-horizontal ">
+            <div class="form-group ">
+                <div class="col-xs-2 hidden-xs ">
+                    Sort By :
+                    <div class="btn-group " style="padding-bottom:20px; ">
+                        <a ng-click="listOrder='term' " class="btn " ng-class=" (listOrder==='term' )? 'btn-primary' : 'btn-default' ">Term</a>
+                        <a ng-click="listOrder='-score' " ng-class=" (listOrder==='score' )? 'btn-primary' : 'btn-default' " class="btn ">Score</a>
+                    </div>
                 </div>
-                <div class="col-xs-3 hidden-xs">
-                    <input id="search-text" type="text" name="searchText" placeholder="Enter Text" size="30" ng-model="search.text" class="input-sm form-control" />
+                <div class="col-xs-4 hidden-xs ">
+                    <input id="search-text " type="text " name="searchText " placeholder="Enter Text " size="30 " ng-model="search.text " class="input-sm form-control " />
                 </div>
-                <div class="col-xs-7">
-                    <div class="btn-group btn-group-sm pull-right">
-                        <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                <div class="col-xs-6 ">
+                    <div class="btn-group " style="padding-bottom:20px;float: right ">
+                        <a ng-click="buttonFilter='All' " class="btn " ng-class=" (buttonFilter==='All' )? 'btn-primary' : 'btn-default' ">All</a>
+                        <a ng-click="buttonFilter='Not Reviewed' " ng-class=" (buttonFilter==='Not Reviewed' )? 'btn-primary' : 'btn-default' " class="btn ">Not Reviewed</a>
+                        <a ng-click="buttonFilter='Reviewed' " ng-class=" (buttonFilter==='Reviewed' )? 'btn-primary' : 'btn-default' " class="btn ">Reviewed</a>
+                        <a ng-click="buttonFilter='Not Interested' " ng-class=" (buttonFilter==='Not Interested' )? 'btn-primary' : 'btn-default' " class="btn "><i class="glyphicon glyphicon-thumbs-down "></i></a>
+                        <a ng-click="buttonFilter='Neutral' " ng-class=" (buttonFilter==='Neutral' )? 'btn-primary' : 'btn-default' " class="btn "><i class="glyphicon glyphicon-minus "></i></a>
+                        <a ng-click="buttonFilter='Interested' " ng-class=" (buttonFilter==='Interested' )? 'btn-primary' : 'btn-default' " class="btn "><i class="glyphicon glyphicon-thumbs-up "></i></a>
+                    </div>
+                    <div class="btn-group btn-group-sm  ">
+                        <button type="button " ng-click="refresh() " class="btn btn-primary "><i class="glyphicon glyphicon-refresh "></i> Refresh</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
-    <div class="btn-group" style="padding-bottom:20px;">
-        <a ng-click="typeFilter = 'Pro'" class="btn" ng-class=" (typeFilter === 'Pro')? 'btn-primary' : 'btn-default' ">Pro</a>
-        <a ng-click="typeFilter = 'Perso'" ng-class=" (typeFilter === 'Perso')? 'btn-primary' : 'btn-default' " class="btn">Perso</a>
-    </div>
-    <div class="btn-group" style="padding-bottom:20px;float: right">
-        <a ng-click="buttonFilter = 'All'" class="btn" ng-class=" (buttonFilter === 'All')? 'btn-primary' : 'btn-default' ">All</a>
-        <a ng-click="buttonFilter = 'Not Reviewed'" ng-class=" (buttonFilter === 'Not Reviewed')? 'btn-primary' : 'btn-default' " class="btn">Not Reviewed</a>
-        <a ng-click="buttonFilter = 'Reviewed'" ng-class=" (buttonFilter === 'Reviewed')? 'btn-primary' : 'btn-default' " class="btn">Reviewed</a>
-        <a ng-click="buttonFilter = 'Interested'" ng-class=" (buttonFilter === 'Interested')? 'btn-primary' : 'btn-default' " class="btn">Interested</a>
-        <a ng-click="buttonFilter = 'Not Interested'" ng-class=" (buttonFilter === 'Not Interested')? 'btn-primary' : 'btn-default' " class="btn">Not Interested</a>
-    </div>
     <br>
     <br>
     <br>
-    <div id="table-word">
-        <div class="likeWord" ng-repeat="word in words |orderBy:'term' | filter:{type:typeFilter}| filter:search.text  | filter: myFilterWord" ng-class="{'bg-success':word.like,'bg-danger':word.like===0}">
-            <h3 class="">{{word.term}} <span class="badge">{{word.score}}</span></h3>
-            <button class="btn btn-xs" ng-click="like(word,0, $index)" ng-class="{'btn-danger':word.like===0}"><i class="glyphicon glyphicon-thumbs-down"></i></button>
-            <button class="btn btn-xs" ng-click="like(word,-1, $index)" ng-class="{'btn-success':word.like}"><i class="glyphicon glyphicon-thumbs-up"></i></button>
-            <small class="text-muted">{{word.words}} </small>
+    <div id="table-word ">
+        <div class="likeWord " ng-repeat="word in words | orderBy:listOrder | filter:{type:typeFilter}| filter:search.text | filter: myFilterWord " ng-class="{ 'bg-success':word.like, 'bg-danger':word.like===-1, 'bg-warning':word.like===0} ">
+            <h3 class=" ">{{word.term}} <span class="badge ">{{word.score}}</span></h3>
+            <button class="btn btn-xs " ng-click="like(word,-1, $index) " ng-class="{ 'btn-danger':word.like===-1} "><i class="glyphicon glyphicon-thumbs-down "></i></button>
+            <button class="btn btn-xs " ng-click="like(word,0, $index) " ng-class="{ 'btn-warning':word.like===0} "><i class="glyphicon glyphicon-minus "></i></button>
+            <button class="btn btn-xs " ng-click="like(word,1, $index) " ng-class="{ 'btn-success':word.like===1} "><i class="glyphicon glyphicon-thumbs-up "></i></button>
+            <small class="text-muted ">{{word.words}} </small>
         </div>
     </div>
 </div>

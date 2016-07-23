@@ -1,0 +1,109 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+    <div class="page-header">
+        <h1 class="pull-left">Sharing Rules Configuration</h1>
+        <div id="form-rule" class="hidden-xs pull-right">
+            <form role="form" name="addRuleForm" class="form-inline pull-right">
+                <div class="form-group">
+                    <label for="addName" class="sr-only">Name</label>
+                    <input id="addName" type="text" name="addName" placeholder="Enter Name" size="60" ng-model="addRule.name" class="input-sm form-control" />
+                </div>
+                <button type="submit" ng-click="add()" class="btn-sm btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add</button>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div id="modRule" tabindex="-1" role="dialog" aria-labelledby="Edit rule" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+                    <h4 id="modRuleLbl" class="modal-title">Edit rule</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" name="editRuleForm">
+                        <input type="hidden" />
+                        <div class="form-group">
+                            <label for="editName" size="30">Active</label>
+                            <input id="editactive" type="checkbox" name="editActive" ng-model="editRule.active" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editName" size="30">Name</label>
+                            <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editRule.name" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editthing">Object</label>
+                            <input id="editthing" type="text" name="editthing" placeholder="Enter thing" size="60" ng-model="editRule.thing" class="form-control" />
+                            <label for="editFilter">Rule Filter</label>
+                            <textarea json-editor rows="8" id="editFilter" name="editFilter" ng-model="editRule.filter" class="form-control"></textarea>
+                            <h4 ng-show="editRuleForm.editFilter.$error.json" class="text-danger">JSON is invalid!</h4> {{editRule.filter | json}}
+                            <br>
+                            <label for="editsharer">sharer</label>
+                            <input id="editsharer" type="text" name="editsharer" placeholder="Enter sharer" size="60" ng-model="editRule.account" class="form-control" />
+                            <label for="editscheduleCron">scheduleCron</label>
+                            <input id="editscheduleCron" type="text" name="editscheduleCron" placeholder="Enter scheduleCron" size="60" ng-model="editRule.scheduleCron" class="form-control" />
+                        </div>&nbsp;
+                        <div class="form-group">
+                            <label for="editName" size="30">Type</label>
+                            <br>
+                            <label>
+                                <input type="radio" ng-model="editRule.area" value="Pro"> Pro
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="radio" ng-model="editRule.area" value="Perso"> Perso
+                            </label>
+                            <br/>
+                            <label for="editsubarea" class="text-muted">SubArea</label>
+                            <input id="editsubarea" type="text" name="editsubarea" placeholder="Enter subarea" size="60" ng-model="editRule.subarea" class="form-control" />
+                        </div>&nbsp;
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                    <button type="button" ng-click="update()" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="table-rule">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <small class="text-muted" style="font-weight:normal"> <input id="showSubArea" type="checkbox" name="showSubArea" ng-model="showSubArea" /> Subarea</small>
+                        <br> Type
+                    </th>
+                    <th>Name </th>
+                    <th>Object</th>
+                    <th>Filter</th>
+                    <th>Sharer</th>
+                    <th>scheduleCron</th>
+                    <th>State</th>
+                    <th>Last checked</th>
+                    <th>Errors</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="rule in rules">
+                    <td class="text-left"><span ng-class="bpRuleType(rule.area)" class="label">{{rule.area}}</span>
+                        <span class="label label-default" ng-if="showSubArea">{{rule.subarea}}</span>
+                    </td>
+                    <td> <b>{{rule.name}}</b> </td>
+                    <td class="text-left text-primary"> {{rule.thing}}</td>
+                    <td class="text-left text-muted"> {{rule.filter}}</td>
+                    <td class="text-left"> {{rule.account}}</td>
+                    <td class="text-left"> {{rule.scheduleCron}}</td>
+                    <td class="text-center"><a href="{{rule.url}}" target="_blank"><span ng-if="!rule.active" class="label label-danger">Desac.</span><span ng-if="rule.active" ng-class="bpRuleStatus(rule.state)" class="label">{{rule.state}}</span></a></td>
+                    <td> <span>{{rule.lastDateRun | timeago}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-danger':rule.errorNb > 0}">{{rule.errorNb}}</span></td>
+                    <td>
+                        <a href="" class="btn btn-xs btn-primary" ng-click="dispUpdate($index)" data-toggle="modal" data-target="#modRule"> <i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="" class="btn btn-xs btn-danger" ng-click="delete($index)"> <i class="glyphicon glyphicon-remove"></i></a>
+                        <a href="" ng-click="refreshOneRule(rule)" class="btn btn-xs btn-default">Run</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

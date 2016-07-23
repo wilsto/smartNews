@@ -3,8 +3,9 @@
 angular.module('jarvisApp')
     .controller('LikeCtrl', function($scope, $http) {
 
-        $scope.buttonFilter = 'All';
+        $scope.buttonFilter = 'Not Reviewed';
         $scope.typeFilter = 'Pro';
+        $scope.listOrder = 'term';
 
         $scope.refresh = function() {
             $http.get('/api/words').
@@ -36,6 +37,8 @@ angular.module('jarvisApp')
                     return item.like !== undefined;
                 case 'Interested':
                     return item.like === 1;
+                case 'Neutral':
+                    return item.like === 0;
                 case 'Not Interested':
                     return item.like === -1;
                 default:

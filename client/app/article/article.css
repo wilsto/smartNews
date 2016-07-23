@@ -17,3 +17,7 @@
 .label-LightDefault {
     background: rgba(112, 126, 142, 0.3);
 }
+
+.panel-shared {
+    border-right: 5px solid #3257CC;
+}

@@ -52,7 +52,7 @@
     <p ng-show="articles.length == 0">No such articles.</p>
     <div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
         <div ng-repeat="article in articles | filter:{'subarea':filterSubarea}" class="panel" ng-class="{'panel-Lightprimary':article.score > 19}">
-            <div class="panel-heading" style="height:120px">
+            <div class="panel-heading" style="height:120px" ng-class="{'panel-shared':article.shared}">
                 <div class="pull-left" style="margin-right:10px">
                     <img class="articleImg" src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt="">
                 </div>

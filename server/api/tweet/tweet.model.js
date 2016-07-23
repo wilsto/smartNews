@@ -4,11 +4,17 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var TweetSchema = new Schema({
+    area: String,
+    subarea: String,
+    name: String,
+    thing: String,
+    filter: String,
     account: String,
-    text: String,
-    media: String,
-    date: Date,
-    done: Boolean
+    scheduleCron: String,
+    state: String,
+    lastDateRun: Date,
+    errorNb: Number,
+    active: Boolean
 });
 
 module.exports = mongoose.model('Tweet', TweetSchema);
