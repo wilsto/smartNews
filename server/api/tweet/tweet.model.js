@@ -3,18 +3,22 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-var TweetSchema = new Schema({
-    area: String,
-    subarea: String,
-    name: String,
-    thing: String,
-    filter: String,
+var TweetsSchema = new Schema({
     account: String,
-    scheduleCron: String,
-    state: String,
-    lastDateRun: Date,
-    errorNb: Number,
-    active: Boolean
+    date: {
+        type: Date,
+        default: Date.now
+    },
+    text: String,
+    lang: String,
+    screen_name: String,
+    retweet_count: String,
+    favorite_count: String,
+    hashtags: Schema.Types.Mixed,
+    urls: Schema.Types.Mixed,
+    user_mentions: Schema.Types.Mixed,
+    symbols: Schema.Types.Mixed,
+    media: Schema.Types.Mixed
 });
 
-module.exports = mongoose.model('Tweet', TweetSchema);
+module.exports = mongoose.model('Tweets', TweetsSchema);

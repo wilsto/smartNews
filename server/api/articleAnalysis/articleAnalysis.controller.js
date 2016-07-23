@@ -132,15 +132,12 @@ process.on('CountArticles', function() {
 
 // articleAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('*** Article Analyse Automatic -- Simple 1 min');
-
+    console.log('*** Article Analyse Automatic -- Simple 5 min');
     articleAnalys(undefined, undefined);
-}, 60 * 1000);
-
-articleAnalys(undefined, undefined);
+}, 5 * 60 * 1000);
 
 // articleAnalys toutes les heures
-var timer = setInterval(function() {
+var timer2 = setInterval(function() {
         console.log('*** Article Analyse Automatic -- Full 60 min');
         articleAnalys('all', undefined);
     },

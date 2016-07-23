@@ -6,7 +6,7 @@ angular.module('jarvisApp')
         $scope.loadRules = function() {
             $http({
                 method: 'GET',
-                url: '/api/tweets'
+                url: '/api/rules'
             }).
             success(function(data) {
                 $scope.rules = data;
@@ -20,7 +20,7 @@ angular.module('jarvisApp')
         $scope.refresh = function() {
             $http({
                 method: 'GET',
-                url: '/api/tweets/refresh'
+                url: '/api/rules/refresh'
             }).
             success(function(data) {
                 $scope.rules = data;
@@ -32,7 +32,7 @@ angular.module('jarvisApp')
         $scope.refreshOneRule = function(rule) {
             $http({
                 method: 'GET',
-                url: '/api/tweets/refresh/' + rule._id
+                url: '/api/rules/refresh/' + rule._id
             }).
             success(function(data) {
                 rule = data[0];
@@ -44,7 +44,7 @@ angular.module('jarvisApp')
             var delRule = $scope.rules[id];
             $http({
                 method: 'DELETE',
-                url: '/api/tweets/' + delRule._id
+                url: '/api/rules/' + delRule._id
             }).
             success(function() {
                 $scope.rules.splice(id, 1);
@@ -56,7 +56,7 @@ angular.module('jarvisApp')
             $http({
                 method: 'POST',
                 data: $scope.addRule,
-                url: '/api/tweets'
+                url: '/api/rules'
             }).
             success(function(data) {
                 $scope.rules.push(data);
@@ -69,7 +69,7 @@ angular.module('jarvisApp')
             $scope.editRuleId = id;
             $http({
                 method: 'GET',
-                url: '/api/tweets/' + editRule._id
+                url: '/api/rules/' + editRule._id
             }).
             success(function(data) {
                 $scope.editRule = data;
@@ -85,7 +85,7 @@ angular.module('jarvisApp')
             $http({
                 method: 'PUT',
                 data: $scope.editRule,
-                url: '/api/tweets/' + $scope.editRule._id
+                url: '/api/rules/' + $scope.editRule._id
             }).
             success(function() {
                 $scope.loadRules();
