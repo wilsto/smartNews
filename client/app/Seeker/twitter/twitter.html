@@ -42,6 +42,8 @@
                             <textarea rows="3" id="editParams" name="editParams" ng-model="editRule.params" class="form-control"></textarea>
                             <label for="editFilter">Tweet Filter</label>
                             <textarea rows="3" id="editFilter" name="editFilter" ng-model="editRule.filter" class="form-control"></textarea>
+                            <label for="editReject">Tweet Reject</label>
+                            <textarea rows="3" id="editReject" name="editReject" ng-model="editRule.reject" class="form-control"></textarea>
                         </div>&nbsp;
                         <div class="form-group">
                             <label for="editName" size="30">Area</label>
@@ -79,6 +81,7 @@
                     <th>Path</th>
                     <th>Query Params</th>
                     <th>Tweet Filter</th>
+                    <th>Reject</th>
                     <th>State</th>
                     <th>Last checked</th>
                     <th>Errors</th>
@@ -95,6 +98,7 @@
                     <td class="text-left text-muted"> {{rule.path}}</td>
                     <td class="text-left text-muted"> {{rule.params}}</td>
                     <td class="text-left text-muted"> {{rule.filter}}</td>
+                    <td class="text-left text-muted"> {{rule.reject}}</td>
                     <td class="text-center"><a href="{{rule.url}}" target="_blank"><span ng-if="!rule.active" class="label label-danger">Desac.</span><span ng-if="rule.active" ng-class="bpRuleStatus(rule.state)" class="label">{{rule.state}}</span></a></td>
                     <td> <span>{{rule.lastDateRun | timeago}}</span></td>
                     <td class="text-center text-muted"><span ng-class="{'label label-danger':rule.errorNb > 0}">{{rule.errorNb}}</span></td>

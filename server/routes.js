@@ -12,6 +12,7 @@ module.exports = function(app) {
     app.use('/api/rules', require('./api/rule'));
     app.use('/api/twitterrules', require('./api/twitterrule'));
     app.use('/api/tweets', require('./api/tweet'));
+    app.use('/api/tweeteurs', require('./api/tweeteur'));
     app.use('/api/interests', require('./api/interest'));
     app.use('/api/words', require('./api/word'));
     app.use('/api/articleAnalysiss', require('./api/articleAnalysis'));

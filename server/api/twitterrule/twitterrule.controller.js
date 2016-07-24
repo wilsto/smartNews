@@ -6,10 +6,82 @@ auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
 //auditLog.addTransport("console");
 
 var _ = require('lodash');
+var Twit = require('twit');
+var schedule = require('node-schedule');
+
+// configuration
+var conf = require('../config.json');
 
 // models
 var TwitterRule = require('./twitterrule.model');
-var Article = require('../article/article.model');
+var Tweets = require('../tweet/tweet.model');
+
+//tableau des rule accounts
+var T = [];
+var streamJob = [];
+
+function CreateTweet(rule, tweet) {
+    var newTweet = {
+        account: rule.account,
+        rule: rule._id,
+        text: tweet.text,
+        lang: tweet.lang,
+        screen_name: tweet.user.screen_name,
+        retweet_count: tweet.retweet_count,
+        favorite_count: tweet.favorite_count,
+        hashtags: tweet.entities.hashtags,
+        urls: tweet.entities.urls,
+        user_mentions: tweet.entities.user_mentions,
+        symbols: tweet.entities.symbols,
+        media: tweet.entities.media
+    };
+
+    Tweets.create(newTweet, function(err, tweet) {
+        if (err) {
+            console.log(err);
+        }
+        console.log('add tweet', rule.name + '  ' + tweet.text);
+    });
+}
+
+function CaptureTweets(rule) {
+    if (rule.path === 'user') {
+        streamJob[rule._id] = T[rule.account].stream('user');
+        streamJob[rule._id].on('tweet', function(tweet) {
+            if (tweet.text.toLowerCase().indexOf(rule.filter) > -1 && tweet.text.toLowerCase().indexOf(rule.reject) === -1) {
+                new CreateTweet(rule, tweet);
+            }
+        })
+    }
+}
+
+function CapturTweetsBasedOnRules() {
+    TwitterRule.find(function(err, rules) {
+        if (err) {
+            console.log('err', err);
+        } else {
+            _.each(rules, function(rule) {
+
+                // création des comptes
+                if (T[rule.account] === undefined) {
+                    T[rule.account] = new Twit({
+                        consumer_key: conf['consumer_key_' + rule.account],
+                        consumer_secret: conf['consumer_secret_' + rule.account],
+                        access_token: conf['access_token_' + rule.account],
+                        access_token_secret: conf['access_token_secret_' + rule.account],
+                        timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests.
+                    });
+                }
+
+                // création des jobs CRON
+                new CaptureTweets(rule);
+
+            });
+            //preparation to rule
+        }
+    });
+}
+new CapturTweetsBasedOnRules();
 
 // Get list of rules
 exports.index = function(req, res) {

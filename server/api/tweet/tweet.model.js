@@ -9,6 +9,7 @@ var TweetsSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    rule: { type: mongoose.Schema.Types.ObjectId, ref: 'TwitterRules' },
     text: String,
     lang: String,
     screen_name: String,

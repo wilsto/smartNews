@@ -6,49 +6,9 @@ auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
 //auditLog.addTransport("console");
 
 var _ = require('lodash');
-var Twit = require('twit');
-
-// configuration
-var conf = require('../config.json');
 
 // models
 var Tweets = require('./tweet.model');
-
-
-var streamT = new Twit({
-    consumer_key: conf['consumer_key_willSTOPHE'],
-    consumer_secret: conf['consumer_secret_willSTOPHE'],
-    access_token: conf['access_token_willSTOPHE'],
-    access_token_secret: conf['access_token_secret_willSTOPHE'],
-    timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests.
-});
-
-// same result as doing { track: 'bananas,oranges,strawberries' }
-var stream_willSTOPHE = streamT.stream('user');
-stream_willSTOPHE.on('tweet', function(tweet) {
-    if (tweet.text.toLowerCase().indexOf('#quote') > -1) {
-        var newTweet = {
-            account: 'willSTOPHE',
-            text: tweet.text,
-            lang: tweet.lang,
-            screen_name: tweet.user.screen_name,
-            retweet_count: tweet.retweet_count,
-            favorite_count: tweet.favorite_count,
-            hashtags: tweet.entities.hashtags,
-            urls: tweet.entities.urls,
-            user_mentions: tweet.entities.user_mentions,
-            symbols: tweet.entities.symbols,
-            media: tweet.entities.media
-        };
-
-        Tweets.create(newTweet, function(err, tweet) {
-            if (err) {
-                console.log(err);
-            }
-            console.log('add tweet', tweet.text);
-        });
-    }
-})
 
 // Get list of tweets
 exports.index = function(req, res) {

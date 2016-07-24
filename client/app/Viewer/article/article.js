@@ -5,7 +5,7 @@ angular.module('jarvisApp')
         $stateProvider
             .state('article', {
                 url: '/article/:area',
-                templateUrl: 'app/article/article.html',
+                templateUrl: 'app/Viewer/article/article.html',
                 controller: 'ArticleCtrl'
             });
     });

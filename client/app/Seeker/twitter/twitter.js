@@ -5,7 +5,7 @@ angular.module('jarvisApp')
         $stateProvider
             .state('twitter', {
                 url: '/twitter',
-                templateUrl: 'app/twitter/twitter.html',
+                templateUrl: 'app/Seeker/twitter/twitter.html',
                 controller: 'TwitterCtrl'
             });
     });

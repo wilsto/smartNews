@@ -5,7 +5,7 @@ angular.module('jarvisApp')
         $stateProvider
             .state('sharerConfig', {
                 url: '/sharerConfig',
-                templateUrl: 'app/sharerConfig/sharerConfig.html',
+                templateUrl: 'app/Sharer/sharerConfig/sharerConfig.html',
                 controller: 'SharerConfigCtrl'
             });
     });

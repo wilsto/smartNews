@@ -11,6 +11,7 @@ var TwitterRuleSchema = new Schema({
     path: String,
     params: String,
     filter: String,
+    reject: String,
     state: String,
     lastDateRun: Date,
     errorNb: Number,
