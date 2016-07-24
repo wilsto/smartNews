@@ -51,7 +51,7 @@ var articleToShare = function(rule) {
                             var b64content = new Buffer(body).toString('base64');
 
                             // first we must post the media to Twitter
-                            T[rule._id].post('media/upload', {
+                            T[rule.account].post('media/upload', {
                                 media_data: b64content
                             }, function(err, data, response) {
 
@@ -66,7 +66,7 @@ var articleToShare = function(rule) {
                                     media_ids: [mediaIdStr]
                                 }
 
-                                T[rule._id].post('statuses/update', params, function(err, data, response) {
+                                T[rule.account].post('statuses/update', params, function(err, data, response) {
                                     if (err) {
                                         auditLog.logEvent('Error', 'rule.controller.js - function articleToShare', 'T.post/statuses/update', TwitText, 'err', err);
                                     } else {

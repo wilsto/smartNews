@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('jarvisApp', [
-    'ngCookies',
-    'ngResource',
-    'ngSanitize',
-    'ngAnimate',
-    'btford.socket-io',
-    'ui.router',
-    'ui.bootstrap',
-    'infinite-scroll'
-])
+        'ngCookies',
+        'ngResource',
+        'ngSanitize',
+        'ngAnimate',
+        'btford.socket-io',
+        'ui.router',
+        'ui.bootstrap',
+        'infinite-scroll',
+        'multipleSelect'
+    ])
     .config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider
             .otherwise('/');

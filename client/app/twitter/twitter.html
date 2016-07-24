@@ -1,0 +1,110 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+    <div class="page-header">
+        <h1 class="pull-left">Capturing Twitter Rules Configuration</h1>
+        <div id="form-rule" class="hidden-xs pull-right">
+            <form role="form" name="addRuleForm" class="form-inline pull-right">
+                <div class="form-group">
+                    <label for="addName" class="sr-only">Name</label>
+                    <input id="addName" type="text" name="addName" placeholder="Enter Name" size="60" ng-model="addRule.name" class="input-sm form-control" />
+                </div>
+                <button type="submit" ng-click="add()" class="btn-sm btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add</button>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div id="modRule" tabindex="-1" role="dialog" aria-labelledby="Edit rule" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+                    <h4 id="modRuleLbl" class="modal-title">Edit rule</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" name="editRuleForm">
+                        <div class="form-group">
+                            <label for="editName" size="30">Active</label>
+                            <input id="editactive" type="checkbox" name="editActive" ng-model="editRule.active" />
+                        </div>
+                        <input type="hidden" />
+                        <label for="editaccount">Account</label>
+                        <multiple-autocomplete ng-model="accountArr" suggestions-arr="optionsList">
+                        </multiple-autocomplete>
+                        <input id="editaccount" type="hidden" name="editaccount" placeholder="Enter account" size="60" ng-model="editRule.account" class="form-control" />
+                        <div class="form-group">
+                            <label for="editName" size="30">Name</label>
+                            <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editRule.name" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editpath">Path</label>
+                            <input id="editpath" type="text" name="editpath" placeholder="Enter path" size="60" ng-model="editRule.path" class="form-control" />
+                            <label for="editParams">Query Params</label>
+                            <textarea rows="3" id="editParams" name="editParams" ng-model="editRule.params" class="form-control"></textarea>
+                            <label for="editFilter">Tweet Filter</label>
+                            <textarea rows="3" id="editFilter" name="editFilter" ng-model="editRule.filter" class="form-control"></textarea>
+                        </div>&nbsp;
+                        <div class="form-group">
+                            <label for="editName" size="30">Area</label>
+                            <br>
+                            <label>
+                                <input type="radio" ng-model="editRule.area" value="Pro"> Pro
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="radio" ng-model="editRule.area" value="Perso"> Perso
+                            </label>
+                            <br/>
+                            <label for="editsubarea" class="text-muted">SubArea</label>
+                            <input id="editsubarea" type="text" name="editsubarea" placeholder="Enter subarea" size="60" ng-model="editRule.subarea" class="form-control" />
+                        </div>&nbsp;
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                    <button type="button" ng-click="update()" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="table-rule">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>
+                        <small class="text-muted" style="font-weight:normal"> <input id="showSubArea" type="checkbox" name="showSubArea" ng-model="showSubArea" /> Subarea</small>
+                        <br> Area
+                    </th>
+                    <th>Name </th>
+                    <th>Path</th>
+                    <th>Query Params</th>
+                    <th>Tweet Filter</th>
+                    <th>State</th>
+                    <th>Last checked</th>
+                    <th>Errors</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="rule in twitterrules">
+                    <td class="text-left text-primary"> {{rule.account}}</td>
+                    <td class="text-left"><span ng-class="bpRuleType(rule.area)" class="label">{{rule.area}}</span>
+                        <span class="label label-default" ng-if="showSubArea">{{rule.subarea}}</span>
+                    </td>
+                    <td> <b>{{rule.name}}</b> </td>
+                    <td class="text-left text-muted"> {{rule.path}}</td>
+                    <td class="text-left text-muted"> {{rule.params}}</td>
+                    <td class="text-left text-muted"> {{rule.filter}}</td>
+                    <td class="text-center"><a href="{{rule.url}}" target="_blank"><span ng-if="!rule.active" class="label label-danger">Desac.</span><span ng-if="rule.active" ng-class="bpRuleStatus(rule.state)" class="label">{{rule.state}}</span></a></td>
+                    <td> <span>{{rule.lastDateRun | timeago}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-danger':rule.errorNb > 0}">{{rule.errorNb}}</span></td>
+                    <td>
+                        <a href="" class="btn btn-xs btn-primary" ng-click="editTwitterRule($index)" data-toggle="modal" data-target="#modRule"> <i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="" class="btn btn-xs btn-info" ng-click="duplicate($index)"> <i class="glyphicon glyphicon-duplicate"></i></a>
+                        <a href="" class="btn btn-xs btn-danger" ng-click="delete($index)"> <i class="glyphicon glyphicon-remove"></i></a>
+                        <a href="" ng-click="refreshOneRule(rule)" class="btn btn-xs btn-default">Run</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
