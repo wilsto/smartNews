@@ -152,4 +152,19 @@ angular.module('jarvisApp')
                 return 'label-default';
             }
         };
+
+        $scope.displayRelationship = function(status) {
+            if (_.isEqual(status, ['followers', 'friends'])) {
+                return 'Friend';
+            } else if (_.isEqual(status, ['friends', 'followers'])) {
+                return 'Friend';
+            } else if (_.isEqual(status, ['followers'])) {
+                return 'Fan';
+            } else if (_.isEqual(status, ['friends'])) {
+                return 'Star';
+            } else {
+                return '-';
+            }
+        };
+
     });

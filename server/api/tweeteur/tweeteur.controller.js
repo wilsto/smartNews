@@ -15,9 +15,12 @@ var conf = require('../config.json');
 // models
 var Tweeteurs = require('./tweeteur.model');
 
-
-var cursorFriends = -1;
-var cursorFollowers = -1;
+var cursorFriends = [];
+var cursorFollowers = [];
+cursorFriends['willSTOPHE'] = -1;
+cursorFriends['leadbywill'] = -1;
+cursorFollowers['willSTOPHE'] = -1;
+cursorFollowers['leadbywill'] = -1;
 
 function ListFriends(account) {
     var T = [];
@@ -26,34 +29,35 @@ function ListFriends(account) {
         consumer_secret: conf['consumer_secret_' + account],
         access_token: conf['access_token_' + account],
         access_token_secret: conf['access_token_secret_' + account],
-        timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests. 
+        timeout_ms: 60 * 1000 // optional HTTP request timeout to apply to all requests. 
     });
 
-    var params = { screen_name: account, count: 200, cursor: cursorFriends };
+    var params = { screen_name: account, count: 200, cursor: cursorFriends[account] };
     T[account].get('friends/list', params, function(err, data, response) {
         if (data.errors) {
-            console.log('friends errors', data.errors);
+            console.log('friends errors ' + account, data.errors);
         }
         _.each(data.users, function(user) {
             user.account = account;
             user.type = 'friends';
-            Tweeteurs.findOrCreate({ id_str: user.id_str, type: 'friends' }, user, function(err, article, created) {
-                if (created) {
-                    console.log('new tweeteur suivi', user.screen_name);
+            user.date = Date.now();
+            Tweeteurs.update({ id_str: user.id_str, type: 'friends', account: account }, user, { upsert: true }, function(err, numberAffected, rawResponse) {
+                if (rawResponse) {
+                    console.log('new tweeteur suivi ' + account + ' :', user.screen_name);
                     //auditLog.logEvent('Event', 'feed.controller.js - function refreshFeed', 'New Article', feed.name + ' : ' + article.title, article.guid, article.title);
                 } else {
                     //console.log('already tweeteur ', user.screen_name);
                     //console.log(' Exist :' + article.guid)
                 }
                 if (err) {
-                    console.log('err', err);
+                    console.log('err ' + account, err);
                     // go through all the errors...
                     //auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed -  Article.create', 'Detect Error', err, feed.url, article.guid);
                 }
             });
         });
         if (data.next_cursor !== 0 && data.next_cursor !== undefined) {
-            cursorFriends = data.next_cursor;
+            cursorFriends[account] = data.next_cursor;
             new ListFriends(account);
         }
     });
@@ -66,33 +70,34 @@ function ListFollowers(account) {
         consumer_secret: conf['consumer_secret_' + account],
         access_token: conf['access_token_' + account],
         access_token_secret: conf['access_token_secret_' + account],
-        timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests. 
+        timeout_ms: 60 * 1000 // optional HTTP request timeout to apply to all requests. 
     });
-    var params = { screen_name: account, count: 200, cursor: cursorFollowers };
+    var params = { screen_name: account, count: 200, cursor: cursorFollowers[account] };
     T[account].get('followers/list', params, function(err, data, response) {
         if (data.errors) {
-            console.log('followers errors', data.errors);
+            console.log('followers errors ' + account, data.errors);
         }
         _.each(data.users, function(user) {
             user.account = account;
             user.type = 'followers';
-            Tweeteurs.findOrCreate({ id_str: user.id_str, type: 'followers' }, user, function(err, article, created) {
-                if (created) {
-                    console.log('new follower', user.screen_name);
+            user.date = Date.now();
+            Tweeteurs.update({ id_str: user.id_str, type: 'followers', account: account }, user, { upsert: true }, function(err, numberAffected, rawResponse) {
+                if (rawResponse) {
+                    console.log('new follower ' + account + ' :', user.screen_name);
                     //auditLog.logEvent('Event', 'feed.controller.js - function refreshFeed', 'New Article', feed.name + ' : ' + article.title, article.guid, article.title);
                 } else {
                     //console.log('already follower ', user.screen_name);
                     //console.log(' Exist :' + article.guid)
                 }
                 if (err) {
-                    console.log('err', err);
+                    console.log('err ' + account, err);
                     // go through all the errors...
                     //auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed -  Article.create', 'Detect Error', err, feed.url, article.guid);
                 }
             });
         });
         if (data.next_cursor !== 0 && data.next_cursor !== undefined) {
-            cursorFollowers = data.next_cursor;
+            cursorFollowers[account] = data.next_cursor;
             new ListFollowers(account);
         }
 
@@ -101,6 +106,9 @@ function ListFollowers(account) {
 
 new ListFriends('willSTOPHE');
 new ListFollowers('willSTOPHE');
+
+new ListFriends('leadbywill');
+new ListFollowers('leadbywill');
 
 // Get list of tweeteurs
 exports.index = function(req, res) {
@@ -126,9 +134,25 @@ exports.groupByName = function(req, res) {
             lang: { $first: "$lang" },
             followers_count: { $first: "$followers_count" },
             friends_count: { $first: "$friends_count" },
-            willSTOPHE: { $push: { $cond: [{ $eq: ["$account", "willSTOPHE"] }, "$type", ""] } },
-            leadbywill: { $push: { $cond: [{ $eq: ["$account", "leadbywill"] }, "$type", ""] } },
-            geekbywill: { $push: { $cond: [{ $eq: ["$account", "geekbywill"] }, "$type", ""] } }
+            willSTOPHE: { $push: { $cond: [{ $eq: ["$account", "willSTOPHE"] }, "$type", false] } },
+            leadbywill: { $push: { $cond: [{ $eq: ["$account", "leadbywill"] }, "$type", false] } },
+            geekbywill: { $push: { $cond: [{ $eq: ["$account", "geekbywill"] }, "$type", false] } }
+        }
+    }, {
+        "$project": {
+            name: 1,
+            screen_name: 1,
+            description: 1,
+            profile_image_url: 1,
+            lang: 1,
+            followers_count: 1,
+            friends_count: 1,
+            "willSTOPHE": {
+                "$setDifference": ["$willSTOPHE", [false]]
+            },
+            "leadbywill": {
+                "$setDifference": ["$leadbywill", [false]]
+            }
         }
     }, {
         $sort: {

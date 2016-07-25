@@ -69,7 +69,7 @@ function CapturTweetsBasedOnRules() {
                         consumer_secret: conf['consumer_secret_' + rule.account],
                         access_token: conf['access_token_' + rule.account],
                         access_token_secret: conf['access_token_secret_' + rule.account],
-                        timeout_ms: 60 * 1000, // optional HTTP request timeout to apply to all requests.
+                        timeout_ms: 60 * 1000 // optional HTTP request timeout to apply to all requests.
                     });
                 }
 

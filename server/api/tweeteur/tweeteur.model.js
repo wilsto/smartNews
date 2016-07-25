@@ -6,10 +6,7 @@ var findOrCreate = require('mongoose-findorcreate');
 
 var TweeteursSchema = new Schema({
     account: String,
-    date: {
-        type: Date,
-        default: Date.now
-    },
+    date: Date,
     type: String,
     id_str: String,
     name: String,

@@ -12,11 +12,13 @@
                     <th>Name <small class="text-muted" style="font-weight:normal"> <input type="checkbox" name="showDetails" ng-model="showDetails" /> Details</small></th>
                     <th ng-if="showDetails">Description </th>
                     <th ng-if="showDetails">Lang </th>
-                    <th ng-if="showDetails">Followers </th>
-                    <th ng-if="showDetails">Following </th>
+                    <th>Followers </th>
+                    <th>Following </th>
                     <th>willSTOPHE</th>
                     <th>leadbywill</th>
                     <th>geekbywill</th>
+                    <th ng-if="1===2">willSTOPHE</th>
+                    <th ng-if="1===2">leadbywill</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,11 +31,15 @@
                     </td>
                     <td class="text-left text-muted" ng-if="showDetails"> {{user.description}} </td>
                     <td class="text-left text-muted" ng-if="showDetails"> {{user.lang}} </td>
-                    <td class="text-left text-muted" ng-if="showDetails"> {{user.followers_count}} </td>
-                    <td class="text-left text-muted" ng-if="showDetails"> {{user.friends_count}} </td>
-                    <td class="text-left text-primary"> {{user.willSTOPHE}}</td>
-                    <td class="text-left text-primary"> {{user.leadbywill}}</td>
-                    <td class="text-left text-primary"> {{user.geekbywill}}</td>
+                    <td class="text-left text-muted"> {{user.followers_count}} </td>
+                    <td class="text-left text-muted"> {{user.friends_count}} </td>
+                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.willSTOPHE) === 'Star','label-success':displayRelationship(user.willSTOPHE) === 'Friend','label-info':displayRelationship(user.willSTOPHE) === 'Fan'}">{{displayRelationship(user.willSTOPHE)}}</span></td>
+                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.leadbywill) === 'Star','label-success':displayRelationship(user.leadbywill) === 'Friend','label-info':displayRelationship(user.leadbywill) === 'Fan'}">{{displayRelationship(user.leadbywill)}}</span></td>
+                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.geekbywill) === 'Star','label-success':displayRelationship(user.geekbywill) === 'Friend','label-info':displayRelationship(user.geekbywill) === 'Fan'}">{{displayRelationship(user.geekbywill)}}</span></td>
+                    <td class="text-left text-primary" ng-if="1===2"> {{user.willSTOPHE}}</span>
+                    </td>
+                    <td class="text-left text-primary" ng-if="1===2"> {{user.leadbywill}}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
