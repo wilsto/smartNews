@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <div class="page-header">
+    <div>
         <h1>{{area | capitalize}} <small>Articles  <span class="badge">{{articles.length }} / {{nbarticles}}</span></small>
             <div class="btn-group btn-group-sm pull-right">
                 <button type="button" ng-click="filterSubarea = ''" class="btn btn-primary">All</button>
@@ -50,40 +50,38 @@
         </form>
     </div>
     <p ng-show="articles.length == 0">No such articles.</p>
-    <div id="accArticles" class="panel-group" infinite-scroll="loadMoreArticles()">
-        <div ng-repeat="article in articles | filter:{'subarea':filterSubarea}" class="panel" ng-class="{'panel-Lightprimary':article.score > 19}">
-            <div class="panel-heading" style="height:120px" ng-class="{'panel-shared':article.shared}">
-                <div class="pull-left" style="margin-right:10px">
-                    <img class="articleImg" src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt="">
-                </div>
-                <div style="padding-left:10px;overflow:hidden;">
-                    <h4 ng-class="(article.read == true) ? 'panel-title article-read' : 'panel-title'">
-                  <input type="checkbox" ng-model="selectedArticles[article._id]" ng-change='changeSelected()'>
-                  <a data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}" ng-click="ensureRead($index)" onclick="return false;">{{article.title}}</a>     
-                 
-                    <span><a ng-click="readOne($index)" ><i ng-class="(article.read === true) ? 'glyphicon glyphicon-ok text-green' : 'glyphicon glyphicon-eye-open'"></i></a></span>
-                  </h4>
-                    <small class="pull-right article-tb">
-                        <span>{{article.date | timeago}}</span>
-                        <span class="label label-info" ng-show="article.score>0">{{article.score}}</span>
-                        <span class="label label-info" ng-show="article.recommandation>0">{{article.recommandation}}</span>
-                        <span>
-                            <button class="btn btn-xs" ng-click="like(article,0, $index)" ng-class="{'btn-danger':article.like===0}"><i class="glyphicon glyphicon-thumbs-down"></i></button>
-                            <button class="btn btn-xs" ng-click="like(article,1, $index)" ng-class="{'btn-success':article.like}"><i class="glyphicon glyphicon-thumbs-up"></i></button>
-                            <a href="{{article.link}}" target="new"><i class="glyphicon glyphicon-globe"></i></a>
-                     </span>
-                  </small>
-                    <div>
-                        <span class="label label-word label-info">{{article._feed.name}}</span>
-                        <div class="label label-word " ng-class="(term.score>0) ? 'label-Lightsuccess' :'label-LightDefault'" ng-repeat="term in article.terms | orderBy: '-score' | limitTo: 10">{{term.term}} : {{term.score}}</div>
+    <div id="accArticles" class="col-lg-offset-1 col-lg-10 col-md-12" infinite-scroll="loadMoreArticles()">
+        <div class="panel panel-default bootcards-media" ng-repeat="article in articles | filter:{'subarea':filterSubarea}">
+            <div class=" panel-heading " data-toggle="collapse " data-parent="#accArticles " href="#article-{{$index}}">
+                <span class="pull-right text-primary "> #{{$index+1}}</span>
+                <h4> {{article.title}}</h4>
+            </div>
+            <div class="panel-body ">
+            </div>
+            <div>
+                <img ng-src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt=" " class="img-responsive center-block " style="padding-bottom:10px ">
+            </div>
+            <div id="article-{{$index}}" class="panel-collapse collapse">
+                <div class="list-group ">
+                    <div class="list-group-item ">
+                        <i class="fa fa-2x fa-user pull-left "></i>
+                        <label>Name</label>
+                        <div class="list-group-item-heading text-info "> {{article._feed.name}}</div>
+                    </div>
+                    <div class="list-group-item" ng-if="article.urls.length > 0">
+                        <i class="fa fa-2x fa-external-link pull-left"></i>
+                        <label>Urls</label>
+                        <div class="list-group-item-heading text-info">
+                            <a href="{{url.url}}" target="_blank" ng-repeat="url in article.urls">{{url.url}} </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="article-{{$index}}" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div ng-bind-html="article.text"></div>
-                </div>
+            <div class="panel-footer">
+                <small class="pull-left"></small>
+                <small class="pull-right">  {{article.date | timeago }}  <span class="flag-icon" ng-class="{'flag-icon-us':article.lang.substr(0,2)==='en','flag-icon-fr':article.lang.substr(0,2)==='fr'}"></span></small>
             </div>
         </div>
     </div>
+</div>
 </div>

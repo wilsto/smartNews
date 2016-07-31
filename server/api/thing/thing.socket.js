@@ -10,17 +10,22 @@ exports.register = function(socket) {
     thing.schema.post('save', function(doc) {
         onSave(socket, doc);
     });
+    thing.schema.post('update', function(doc) {
+        onSave(socket, doc);
+    });
     thing.schema.post('remove', function(doc) {
         onRemove(socket, doc);
     });
 
     process.on('EmitCountArticles', function(data) {
-        socket.emit('EmitCountArticles');
+        //socket.emit('EmitCountArticles');
+        onSave(socket, data);
     });
 
 }
 
 function onSave(socket, doc, cb) {
+    console.log('thing:save********************************************');
     socket.emit('thing:save', doc);
 }
 

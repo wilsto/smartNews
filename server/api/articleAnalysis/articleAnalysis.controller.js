@@ -15,61 +15,7 @@ var Thing = require('../thing/thing.model');
 var Word = require('../word/word.model');
 var Parser = require('../../NLTK/parser');
 
-var limdu = require('limdu');
-var articleClassifier = new limdu.classifiers.NeuralNetwork();
-var trainBatchSentences = [];
 var allwords = [];
-
-
-var articleRecommand = function() {
-    var query = {
-        like: {
-            $exists: true
-        }
-    };
-
-    Article.find(query).populate('_feed').exec().then(function(articles) {
-        console.log('[-- Start Article Recommandation');
-        console.log(' -- ArticleToRecommand : ', articles.length);
-        async.map(articles, recommandAnalyse, function(err, words) {
-            //console.log('trainBatchSentences', trainBatchSentences);
-            articleClassifier.trainBatch(trainBatchSentences);
-            console.log('--] End Article Recommandation');
-            console.dir(articleClassifier.classify({ html: 1 },
-                /* explanation level = */
-                4));
-            console.dir(articleClassifier.classify({ leadership: 1 }, /* explanation level = */
-                4));
-            console.dir(articleClassifier.classify({ leader: 1 }, /* explanation level = */
-                4));
-            console.dir(articleClassifier.classify({ 'wings': 1, 'flight': 0, 'beak': 1, 'chicken': 1 },
-                /* explanation level = */
-                4));
-        });
-    });
-};
-
-
-function recommandAnalyse(article, callback) {
-    //console.log('article', article.title);
-    var inputterms = {};
-    var Maxcount = _.max(_.map(article.terms, 'count'));
-    //console.log('Maxcount', Maxcount);
-    _.each(article.terms, function(term, key) {
-        if (term.count > 5) {
-            inputterms[term.term] = 1;
-        }
-    });
-    var trainSentence = {
-        input: inputterms,
-        output: article.like
-    };
-    // console.log('trainTerms', trainTerms);
-    //console.log('trainSentence', trainSentence);
-    trainBatchSentences.push(trainSentence);
-    callback(null, article);
-}
-//articleRecommand();
 
 var articleAnalys = function(req, res) {
     Word.find(function(err, words) {
@@ -116,6 +62,7 @@ process.on('CountArticles', function() {
         function(err, articles) {
             Thing.update({ name: 'Articles' }, { $set: { 'available.pro': articles.length } }, function(err, results) {
                 console.log('ArticleCount Pro Updated', articles.length);
+                process.emit('EmitCountArticles', results);
             });
         });
     var articleQuery2 = { starred: true, read: false, type: 'Perso' };
@@ -123,11 +70,12 @@ process.on('CountArticles', function() {
         function(err, articles) {
             Thing.update({ name: 'Articles' }, { $set: { 'available.perso': articles.length } }, function(err, results) {
                 console.log('ArticleCount Perso Updated', articles.length);
+                process.emit('EmitCountArticles', results);
             });
         });
 });
 
-// articleAnalys toutes les heures
+// articleAnalys les nouveaux toutes les 5 min
 var timer = setInterval(function() {
     console.log('*** Article Analyse Automatic -- Simple 5 min');
     articleAnalys(undefined, undefined);

@@ -15,13 +15,13 @@
         <div class="row">
             <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Pro</h3>
-                <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
+                <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in things">
                     <li><a href="/{{thing.url}}/Pro" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.pro > 0}">{{thing.available.pro}}</span></a></li>
                 </ul>
             </div>
             <div class="col-xs-12 col-lg-6">
                 <h3 class="fullTitle">Perso</h3>
-                <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
+                <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in things">
                     <li><a href="/{{thing.url}}/Perso" tooltip="{{thing.info}}"><i class="{{thing.icon}}" style="padding-right:5px"></i> {{thing.name}} <span class="badge badge-default pull-right" ng-class="{'badge-success':thing.available.perso > 0}">{{thing.available.perso}}</span></a></li>
                 </ul>
             </div>
@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-xs-6 col-lg-6">
                 <h3>Last Events</h3>
-                <ul ng-repeat="event in events">
+                <ul ng-repeat="event in events | orderBy:'-date'">
                     <li>
                         <span ng-if="event.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
                         <span ng-if="event.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-xs-6 col-lg-6">
                 <h3>Last Errors</h3>
-                <ul ng-repeat="error in errors">
+                <ul ng-repeat="error in errors | orderBy:'-date'">
                     <li>
                         <span ng-if="error.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
                         <span ng-if="error.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>

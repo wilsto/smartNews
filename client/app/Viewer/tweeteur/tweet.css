@@ -1,0 +1,7 @@
+a.m_title {
+    display: inline-block;
+}
+
+a.m_title:first-letter {
+    text-transform: uppercase;
+}

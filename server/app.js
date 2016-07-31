@@ -41,7 +41,7 @@ var config = require('./config/environment');
 auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
 auditLog.addTransport("console");
 //  method is logEvent( actor, origin, action, label, object, description ) 
-//  
+
 process.on('uncaughtException', function(err) {
     auditLog.logEvent('Error', 'app.js', 'uncaughtException', err, '', '');
 });

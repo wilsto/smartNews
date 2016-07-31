@@ -8,7 +8,7 @@ var Tweets = require('./tweet.model');
 
 
 function processTweetLinks(text) {
-    var exp = /RT/gim;
+    var exp = /RT/gm;
     text = text.replace(exp, '');
     exp = /"/gim;
     text = text.replace(exp, '');
@@ -51,9 +51,20 @@ var timer = setInterval(function() {
 }, 5 * 60 * 1000);
 //tweetAnalys();
 
+
+exports.countTweets = function(req, res) {
+    Tweets.find({}).exec().then(function(tweets) {
+        res.status(200).send({ nbTweets: tweets.length });
+    });
+}
+
 // Get list of tweets
 exports.index = function(req, res) {
-    Tweets.find({}).populate('rule').sort({ cleantext: 1 }).exec().then(function(tweets) {
+    if (typeof req.query.after === 'undefined') {
+        req.query.after = 0;
+    }
+    var after = parseInt(req.query.after);
+    Tweets.find({}).populate('rule').skip(after).limit(50).sort({ cleantext: 1 }).exec().then(function(tweets) {
         return res.json(200, tweets);
     });
 };

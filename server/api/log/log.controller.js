@@ -24,7 +24,6 @@ exports.index = function(req, res) {
 
 // Get list of logs
 exports.top100 = function(req, res) {
-    console.log(req.params.type);
     Log.find({ actor: req.params.type }).skip(0).limit(100).sort({
         date: -1
     }).exec().then(

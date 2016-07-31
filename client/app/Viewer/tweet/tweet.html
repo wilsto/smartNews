@@ -1,100 +1,76 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="col-md-12">
-    <!-- Nav tabs -->
-    <div class="page-header">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#tweets" aria-controls="tweets" role="tab" data-toggle="tab">Tweets</a></li>
-            <li role="presentation"><a href="#followers" aria-controls="followers" role="tab" data-toggle="tab">Followers</a></li>
-        </ul>
-    </div>
-    <!-- Tab panes -->
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="tweets">
-            <div id="table-tweet">
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Rule</th>
-                            <th>Screen_name </th>
-                            <th>Date </th>
-                            <th>Text</th>
-                            <th>media</th>
-                            <th>hashtags </th>
-                            <th>urls </th>
-                            <th>user_mentions</th>
-                            <th>Lang </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="tweet in tweets | orderBy:'Cleantext'">
-                            <td class="text-left text-primary"> {{$index+1}}</td>
-                            <td class="text-left text-muted"> {{tweet.rule.name}}
-                                <br><small> {{tweet.account}} </small></td>
-                            <td>
-                                <a href=""><b class="text-left text-primary">{{tweet.screen_name}}</b></a>
-                            </td>
-                            <td class="text-left text-muted"> {{tweet.date}} </td>
-                            <td class="text-left text-muted"> {{tweet.Cleantext}} </td>
-                            <td class="text-left text-muted">
-                                <span ng-repeat="img in tweet.media"><img ng-src="{{img.media_url|| 'assets/images/noimagefound.jpg'}}" alt="" style="width:400px">  </span>
-                            </td>
-                            <td class="text-left text-muted">
-                                <span ng-repeat="hashtag in tweet.hashtags">{{hashtag.text}} </span>
-                            </td>
-                            <td class="text-left text-muted">
-                                <span ng-repeat="url in tweet.urls">{{url.url}} </span>
-                            </td>
-                            <td class="text-left text-muted">
-                                <span ng-repeat="user in tweet.user_mentions">{{user.screen_name}} </span>
-                            </td>
-                            <td class="text-left text-muted"> {{tweet.lang}} </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="loading-jarvis" ng-show="busy">
+        <div class="loading-text">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                Loading
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane " id="followers">
-            <div id="table-user">
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th> </th>
-                            <th>Name <small class="text-muted" style="font-weight:normal"> <input type="checkbox" name="showDetails" ng-model="showDetails" /> Details</small></th>
-                            <th ng-if="showDetails">Description </th>
-                            <th ng-if="showDetails">Lang </th>
-                            <th>Followers </th>
-                            <th>Following </th>
-                            <th>willSTOPHE</th>
-                            <th>leadbywill</th>
-                            <th>geekbywill</th>
-                            <th ng-if="1===2">willSTOPHE</th>
-                            <th ng-if="1===2">leadbywill</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="user in tweeteurs">
-                            <td class="text-left text-primary"> {{$index+1}}</td>
-                            <td><img ng-src="{{user.profile_image_url || 'assets/images/noimagefound.jpg'}}" alt="" style="width:35px"> </td>
-                            <td>
-                                <a href=""><b class="text-left text-primary">{{user.screen_name}}</b></a>
-                                <br><span class="text-left text-muted">{{user.name}} </span>
-                            </td>
-                            <td class="text-left text-muted" ng-if="showDetails"> {{user.description}} </td>
-                            <td class="text-left text-muted" ng-if="showDetails"> {{user.lang}} </td>
-                            <td class="text-left text-muted"> {{user.followers_count}} </td>
-                            <td class="text-left text-muted"> {{user.friends_count}} </td>
-                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.willSTOPHE) === 'Star','label-success':displayRelationship(user.willSTOPHE) === 'Friend','label-info':displayRelationship(user.willSTOPHE) === 'Fan'}">{{displayRelationship(user.willSTOPHE)}}</span></td>
-                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.leadbywill) === 'Star','label-success':displayRelationship(user.leadbywill) === 'Friend','label-info':displayRelationship(user.leadbywill) === 'Fan'}">{{displayRelationship(user.leadbywill)}}</span></td>
-                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.geekbywill) === 'Star','label-success':displayRelationship(user.geekbywill) === 'Friend','label-info':displayRelationship(user.geekbywill) === 'Fan'}">{{displayRelationship(user.geekbywill)}}</span></td>
-                            <td class="text-left text-primary" ng-if="1===2"> {{user.willSTOPHE}}</span>
-                            </td>
-                            <td class="text-left text-primary" ng-if="1===2"> {{user.leadbywill}}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    </div>
+    <!-- Nav tabs -->
+    <div id="table-tweet" class="col-lg-offset-2 col-lg-8 col-md-12" infinite-scroll="loadMoreTweets()">
+        <div class="panel panel-default bootcards-media" ng-repeat="tweet in tweets | orderBy:'Cleantext'">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}">
+                <span class="pull-right text-primary"> #{{$index+1}}</span>
+                <h4> {{tweet.Cleantext}}</h4>
+            </div>
+            <div class="panel-body">
+            </div>
+            <div ng-repeat="img in tweet.media">
+                <img ng-src="{{img.media_url|| 'assets/images/noimagefound.jpg'}}" alt="" class="img-responsive center-block" style="padding-bottom:10px">
+            </div>
+            <div id="article-{{$index}}" class="panel-collapse collapse">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <i class="fa fa-2x fa-user pull-left"></i>
+                        <label>Name</label>
+                        <div class="list-group-item-heading  text-info"> {{tweet.screen_name}}</div>
+                    </div>
+                    <div class="list-group-item" ng-if="tweet.hashtags.length > 0">
+                        <i class="fa fa-2x fa-twitter pull-left"></i>
+                        <label>Hastag</label>
+                        <div class="list-group-item-heading text-info">
+                            <span ng-repeat="hashtag in tweet.hashtags">#{{hashtag.text}} </span>
+                        </div>
+                    </div>
+                    <div class="list-group-item" ng-if="tweet.urls.length > 0">
+                        <i class="fa fa-2x fa-external-link pull-left"></i>
+                        <label>Urls</label>
+                        <div class="list-group-item-heading text-info">
+                            <a href="{{url.url}}" target="_blank" ng-repeat="url in tweet.urls">{{url.url}} </a>
+                        </div>
+                    </div>
+                    <div class="list-group-item" ng-if="tweet.user_mentions.length > 0">
+                        <i class="fa fa-2x fa-external-link pull-left"></i>
+                        <label>Mentions</label>
+                        <div class="list-group-item-heading text-info">
+                            <a href="{{url.url}}" target="_blank" ng-repeat="url in tweet.user_mentions">{{url.screen_name}} </a>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-2x fa-twitter-square pull-left"></i>
+                        <label>Account</label>
+                        <div class="list-group-item-heading text-info">
+                            {{tweet.account}}
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-2x fa-cog pull-left"></i>
+                        <label>Rule</label>
+                        <div class="list-group-item-heading text-info">
+                            {{tweet.rule.name}}
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <small class="pull-left"></small>
+                    <small class="pull-right">  {{tweet.date}}  <span class="flag-icon" ng-class="{'flag-icon-us':tweet.lang.substr(0,2)==='en','flag-icon-fr':tweet.lang.substr(0,2)==='fr'}"></span></small>
+                </div>
             </div>
         </div>
     </div>

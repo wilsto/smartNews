@@ -2,22 +2,27 @@
 
 angular.module('jarvisApp')
     .controller('MainCtrl', function($scope, $http, socket) {
-        $scope.awesomeThings = [];
+        $scope.things = [];
+        $scope.events = [];
+        $scope.errors = [];
 
-        $http.get('/api/things').success(function(awesomeThings) {
-            $scope.awesomeThings = awesomeThings;
-            socket.syncUpdates('thing', $scope.awesomeThings);
-        });
+        var refreshPage = function() {
+            $http.get('/api/things').success(function(things) {
+                $scope.things = things;
+                socket.syncUpdates('thing', $scope.things);
+            });
 
-        $http.get('/api/logs/top100/Event').success(function(logs) {
-            $scope.events = logs;
-            socket.syncUpdates('log', $scope.logs);
-        });
+            $http.get('/api/logs/top100/Event').success(function(logs) {
+                $scope.events = logs;
+                socket.syncUpdates('logEvent', $scope.events);
+            });
 
-        $http.get('/api/logs/top100/Error').success(function(logs) {
-            $scope.errors = logs;
-            socket.syncUpdates('log', $scope.logs);
-        });
+            $http.get('/api/logs/top100/Error').success(function(logs) {
+                $scope.errors = logs;
+                socket.syncUpdates('logError', $scope.errors);
+            });
+        };
+        refreshPage();
 
         $scope.addThing = function() {
             if ($scope.newThing === '') {
@@ -34,5 +39,4 @@ angular.module('jarvisApp')
         $scope.$on('$destroy', function() {
             socket.unsyncUpdates('thing');
         });
-
     });
