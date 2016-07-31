@@ -27,17 +27,31 @@
             </div>
         </div>
         <br>
-        <div class="col-xs-12 col-lg-12">
-            <h3>Last Log</h3>
-            <ul ng-repeat="log in logs">
-                <li>
-                    <span ng-if="log.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
-                    <span ng-if="log.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>
-                    <span>{{log.date | date:'MMM d, y HH:mm'}} </span>
-                    <span tooltip="{{log.origin}}" style="font-weight:bold"> {{log.action}} </span> {{log.label}}
-                    <br ng-if="log.actor !== 'Event'"> <span ng-if="log.actor !== 'Event'" class="text-danger">{{log.description}}</span>
-                </li>
-            </ul>
+        <div class="row">
+            <div class="col-xs-6 col-lg-6">
+                <h3>Last Events</h3>
+                <ul ng-repeat="event in events">
+                    <li>
+                        <span ng-if="event.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
+                        <span ng-if="event.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>
+                        <span>{{event.date | date:'MMM d, y HH:mm'}} </span>
+                        <span tooltip="{{event.origin}}" style="font-weight:bold"> {{event.action}} </span> {{event.label}}
+                        <br ng-if="event.actor !== 'Event'"> <span ng-if="event.actor !== 'Event'" class="text-danger">{{event.description}}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <h3>Last Errors</h3>
+                <ul ng-repeat="error in errors">
+                    <li>
+                        <span ng-if="error.actor === 'Event'"> <i class="text-primary glyphicon  glyphicon-ok" style="padding-right:5px"></i></span>
+                        <span ng-if="error.actor !== 'Event'"> <i class="text-danger glyphicon glyphicon-warning-sign" style="padding-right:5px"></i></span>
+                        <span>{{error.date | date:'MMM d, y HH:mm'}} </span>
+                        <span tooltip="{{error.origin}}" style="font-weight:bold"> {{error.action}} </span> {{error.label}}
+                        <br ng-if="error.actor !== 'Event'"> <span ng-if="error.actor !== 'Event'" class="text-danger">{{error.description}}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <!--         <form class="thing-form">
     <label>Add New Focus</label>

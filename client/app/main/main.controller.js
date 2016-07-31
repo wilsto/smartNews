@@ -9,8 +9,13 @@ angular.module('jarvisApp')
             socket.syncUpdates('thing', $scope.awesomeThings);
         });
 
-        $http.get('/api/logs/top100').success(function(logs) {
-            $scope.logs = logs;
+        $http.get('/api/logs/top100/Event').success(function(logs) {
+            $scope.events = logs;
+            socket.syncUpdates('log', $scope.logs);
+        });
+
+        $http.get('/api/logs/top100/Error').success(function(logs) {
+            $scope.errors = logs;
             socket.syncUpdates('log', $scope.logs);
         });
 

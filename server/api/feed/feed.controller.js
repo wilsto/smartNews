@@ -170,9 +170,10 @@ function refreshFeed(feed, callBack) {
                             //console.log('already Exist :' + article.guid)
                         }
                         if (err) {
-                            console.log('err', err);
+                            //console.log('err', err);
+                            require('util').inspect(err);
                             // go through all the errors...
-                            //auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed -  Article.create', 'Detect Error', err, feed.url, article.guid);
+                            auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed -  Article.create', 'Detect Error', err, feed.url, article.guid);
                             state++;
                         }
                     });
