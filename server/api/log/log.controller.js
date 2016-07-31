@@ -23,12 +23,12 @@ exports.index = function(req, res) {
 };
 
 // Get list of logs
-exports.top20 = function(req, res) {
+exports.top100 = function(req, res) {
     Log.find().sort({
         date: -1
     }).exec().then(
         function(logs) {
-            return res.json(200, logs.slice(1, 20));
+            return res.json(200, logs.slice(1, 100));
         });
 };
 

@@ -2,8 +2,6 @@
 
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
-auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-//auditLog.addTransport("console");
 
 var _ = require('lodash');
 var Twit = require('twit');
@@ -47,6 +45,10 @@ function CreateTweet(rule, tweet) {
 function CaptureTweets(rule) {
     if (rule.path === 'user') {
         streamJob[rule._id] = T[rule.account].stream('user');
+        streamJob[rule._id].on('error', function(err) {
+            // handle the error here 
+            auditLog.logEvent('Error', 'twitterrule.controller.js - function CaptureTweets', 'Stream - ' + rule.name, err, '');
+        });
         streamJob[rule._id].on('tweet', function(tweet) {
             if (tweet.text.toLowerCase().indexOf(rule.filter) > -1 && tweet.text.toLowerCase().indexOf(rule.reject) === -1) {
                 new CreateTweet(rule, tweet);

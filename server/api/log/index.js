@@ -6,7 +6,7 @@ var controller = require('./log.controller');
 var router = express.Router();
 
 router.get('/', controller.index);
-router.get('/top20', controller.top20);
+router.get('/top100', controller.top100);
 router.get('/:id', controller.show);
 router.post('/', controller.create);
 router.put('/:id', controller.update);

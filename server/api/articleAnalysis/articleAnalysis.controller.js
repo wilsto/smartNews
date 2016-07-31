@@ -1,9 +1,6 @@
 'use strict';
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
-auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-//auditLog.addTransport("console");
-//  method is logEvent( actor, origin, action, label, object, description ) 
 
 var request = require('request');
 var getPage = require('summarizer').getPage;

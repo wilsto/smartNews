@@ -2,8 +2,6 @@
 
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
-auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-//auditLog.addTransport("console");
 
 var _ = require('lodash');
 var Twit = require('twit');

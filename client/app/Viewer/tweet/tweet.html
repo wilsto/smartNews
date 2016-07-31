@@ -1,47 +1,101 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="col-md-12">
+    <!-- Nav tabs -->
     <div class="page-header">
-        <h1 class="pull-left">Tweets & Users</h1>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#tweets" aria-controls="tweets" role="tab" data-toggle="tab">Tweets</a></li>
+            <li role="presentation"><a href="#followers" aria-controls="followers" role="tab" data-toggle="tab">Followers</a></li>
+        </ul>
     </div>
-    <div id="table-user">
-        <table class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th> </th>
-                    <th>Name <small class="text-muted" style="font-weight:normal"> <input type="checkbox" name="showDetails" ng-model="showDetails" /> Details</small></th>
-                    <th ng-if="showDetails">Description </th>
-                    <th ng-if="showDetails">Lang </th>
-                    <th>Followers </th>
-                    <th>Following </th>
-                    <th>willSTOPHE</th>
-                    <th>leadbywill</th>
-                    <th>geekbywill</th>
-                    <th ng-if="1===2">willSTOPHE</th>
-                    <th ng-if="1===2">leadbywill</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="user in tweeteurs">
-                    <td class="text-left text-primary"> {{$index+1}}</td>
-                    <td><img ng-src="{{user.profile_image_url || 'assets/images/noimagefound.jpg'}}" alt="" style="width:35px"> </td>
-                    <td>
-                        <a href=""><b class="text-left text-primary">{{user.screen_name}}</b></a>
-                        <br><span class="text-left text-muted">{{user.name}} </span>
-                    </td>
-                    <td class="text-left text-muted" ng-if="showDetails"> {{user.description}} </td>
-                    <td class="text-left text-muted" ng-if="showDetails"> {{user.lang}} </td>
-                    <td class="text-left text-muted"> {{user.followers_count}} </td>
-                    <td class="text-left text-muted"> {{user.friends_count}} </td>
-                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.willSTOPHE) === 'Star','label-success':displayRelationship(user.willSTOPHE) === 'Friend','label-info':displayRelationship(user.willSTOPHE) === 'Fan'}">{{displayRelationship(user.willSTOPHE)}}</span></td>
-                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.leadbywill) === 'Star','label-success':displayRelationship(user.leadbywill) === 'Friend','label-info':displayRelationship(user.leadbywill) === 'Fan'}">{{displayRelationship(user.leadbywill)}}</span></td>
-                    <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.geekbywill) === 'Star','label-success':displayRelationship(user.geekbywill) === 'Friend','label-info':displayRelationship(user.geekbywill) === 'Fan'}">{{displayRelationship(user.geekbywill)}}</span></td>
-                    <td class="text-left text-primary" ng-if="1===2"> {{user.willSTOPHE}}</span>
-                    </td>
-                    <td class="text-left text-primary" ng-if="1===2"> {{user.leadbywill}}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tweets">
+            <div id="table-tweet">
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Rule</th>
+                            <th>Screen_name </th>
+                            <th>Date </th>
+                            <th>Text</th>
+                            <th>media</th>
+                            <th>hashtags </th>
+                            <th>urls </th>
+                            <th>user_mentions</th>
+                            <th>Lang </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="tweet in tweets | orderBy:'Cleantext'">
+                            <td class="text-left text-primary"> {{$index+1}}</td>
+                            <td class="text-left text-muted"> {{tweet.rule.name}}
+                                <br><small> {{tweet.account}} </small></td>
+                            <td>
+                                <a href=""><b class="text-left text-primary">{{tweet.screen_name}}</b></a>
+                            </td>
+                            <td class="text-left text-muted"> {{tweet.date}} </td>
+                            <td class="text-left text-muted"> {{tweet.Cleantext}} </td>
+                            <td class="text-left text-muted">
+                                <span ng-repeat="img in tweet.media"><img ng-src="{{img.media_url|| 'assets/images/noimagefound.jpg'}}" alt="" style="width:400px">  </span>
+                            </td>
+                            <td class="text-left text-muted">
+                                <span ng-repeat="hashtag in tweet.hashtags">{{hashtag.text}} </span>
+                            </td>
+                            <td class="text-left text-muted">
+                                <span ng-repeat="url in tweet.urls">{{url.url}} </span>
+                            </td>
+                            <td class="text-left text-muted">
+                                <span ng-repeat="user in tweet.user_mentions">{{user.screen_name}} </span>
+                            </td>
+                            <td class="text-left text-muted"> {{tweet.lang}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane " id="followers">
+            <div id="table-user">
+                <table class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th> </th>
+                            <th>Name <small class="text-muted" style="font-weight:normal"> <input type="checkbox" name="showDetails" ng-model="showDetails" /> Details</small></th>
+                            <th ng-if="showDetails">Description </th>
+                            <th ng-if="showDetails">Lang </th>
+                            <th>Followers </th>
+                            <th>Following </th>
+                            <th>willSTOPHE</th>
+                            <th>leadbywill</th>
+                            <th>geekbywill</th>
+                            <th ng-if="1===2">willSTOPHE</th>
+                            <th ng-if="1===2">leadbywill</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in tweeteurs">
+                            <td class="text-left text-primary"> {{$index+1}}</td>
+                            <td><img ng-src="{{user.profile_image_url || 'assets/images/noimagefound.jpg'}}" alt="" style="width:35px"> </td>
+                            <td>
+                                <a href=""><b class="text-left text-primary">{{user.screen_name}}</b></a>
+                                <br><span class="text-left text-muted">{{user.name}} </span>
+                            </td>
+                            <td class="text-left text-muted" ng-if="showDetails"> {{user.description}} </td>
+                            <td class="text-left text-muted" ng-if="showDetails"> {{user.lang}} </td>
+                            <td class="text-left text-muted"> {{user.followers_count}} </td>
+                            <td class="text-left text-muted"> {{user.friends_count}} </td>
+                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.willSTOPHE) === 'Star','label-success':displayRelationship(user.willSTOPHE) === 'Friend','label-info':displayRelationship(user.willSTOPHE) === 'Fan'}">{{displayRelationship(user.willSTOPHE)}}</span></td>
+                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.leadbywill) === 'Star','label-success':displayRelationship(user.leadbywill) === 'Friend','label-info':displayRelationship(user.leadbywill) === 'Fan'}">{{displayRelationship(user.leadbywill)}}</span></td>
+                            <td class="text-left text-primary"> <span class="label" ng-class="{'label-warning':displayRelationship(user.geekbywill) === 'Star','label-success':displayRelationship(user.geekbywill) === 'Friend','label-info':displayRelationship(user.geekbywill) === 'Fan'}">{{displayRelationship(user.geekbywill)}}</span></td>
+                            <td class="text-left text-primary" ng-if="1===2"> {{user.willSTOPHE}}</span>
+                            </td>
+                            <td class="text-left text-primary" ng-if="1===2"> {{user.leadbywill}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>

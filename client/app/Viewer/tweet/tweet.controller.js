@@ -12,6 +12,20 @@ angular.module('jarvisApp')
             'jarvisbywill'
         ];
 
+        $scope.loadTweets = function() {
+            $http({
+                method: 'GET',
+                url: '/api/tweets'
+            }).
+            success(function(data) {
+                $scope.tweets = data;
+            }).
+            error(function() {
+                $scope.tweets = [];
+            });
+        };
+        $scope.loadTweets();
+
         $scope.loadTweeteurs = function() {
             $http({
                 method: 'GET',

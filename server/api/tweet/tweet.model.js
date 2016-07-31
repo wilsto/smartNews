@@ -11,6 +11,7 @@ var TweetsSchema = new Schema({
     },
     rule: { type: mongoose.Schema.Types.ObjectId, ref: 'TwitterRules' },
     text: String,
+    Cleantext: String,
     lang: String,
     screen_name: String,
     retweet_count: String,

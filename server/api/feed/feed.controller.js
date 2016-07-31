@@ -1,8 +1,6 @@
 'use strict';
 var auditLog = require('audit-log');
 var config = require('../../config/environment');
-auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-//  method is logEvent( actor, origin, action, label, object, description ) 
 
 var request = require('request');
 var _ = require('lodash');
@@ -33,7 +31,7 @@ var timer = setInterval(function() {
     req.query = {};
     var res = {};
     refreshFeeds(req, res);
-}, 47 * 60 * 1000);
+}, 5 * 60 * 1000);
 
 refreshFeeds();
 
@@ -138,7 +136,7 @@ function refreshFeed(feed, callBack) {
 
     req.on('error', function(error) {
         auditLog.logEvent('Error', 'feed.controller.js - function refreshFeed - req.on(error', 'Detect Error', feed.url, '', '');
-        callBack(error);
+        //callBack(error);
     });
     req.on('response', function(res) {
         var stream = this;

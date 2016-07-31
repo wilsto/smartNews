@@ -1,21 +1,59 @@
 'use strict';
 
-var auditLog = require('audit-log');
-var config = require('../../config/environment');
-auditLog.addTransport("mongoose", { connectionString: config.mongo.uri });
-//auditLog.addTransport("console");
-
 var _ = require('lodash');
+var Parser = require('../../NLTK/parser');
 
 // models
 var Tweets = require('./tweet.model');
 
+
+function processTweetLinks(text) {
+    var exp = /RT/gim;
+    text = text.replace(exp, '');
+    exp = /"/gim;
+    text = text.replace(exp, '');
+
+    exp = /(ftp|http|https|file):\/\/[\S]+(\b|$)/gim;
+    text = text.replace(exp, '');
+    exp = /(^|\s)#(\w+)/g;
+    text = text.replace(exp, '');
+    exp = /(^|\s)@(\w+)/g;
+    text = text.replace(exp, '');
+
+    exp = /~/gim;
+    text = text.replace(exp, '');
+    exp = /-/gim;
+    text = text.replace(exp, '');
+    exp = /:/gim;
+    text = text.replace(exp, '');
+    return text.trim();
+}
+
+var tweetAnalys = function() {
+    console.log('tweetAnalys***********');
+
+    Tweets.find().exec().then(function(tweets) {
+        _.each(tweets, function(tweet) {
+            // update document, using its own properties
+            tweet.Cleantext = processTweetLinks(tweet.text);
+
+            // save the updated document
+            Tweets.update({ _id: tweet._id }, tweet, function(updateTweet) {
+                console.log('updateTweet', updateTweet);
+            });
+        });
+    });
+}
+
+// tweetAnalys toutes les heures
+var timer = setInterval(function() {
+    console.log('*** Tweet Analyse Automatic -- Simple 5 min');
+}, 5 * 60 * 1000);
+//tweetAnalys();
+
 // Get list of tweets
 exports.index = function(req, res) {
-    Tweets.find(function(err, tweets) {
-        if (err) {
-            return handleError(res, err);
-        }
+    Tweets.find({}).populate('rule').sort({ cleantext: 1 }).exec().then(function(tweets) {
         return res.json(200, tweets);
     });
 };
