@@ -49,17 +49,15 @@
             </div>
         </form>
     </div>
-    <p ng-show="articles.length == 0">No such articles.</p>
-    <div id="accArticles" class="col-lg-offset-1 col-lg-10 col-md-12" infinite-scroll="loadMoreArticles()">
+    <p ng-show="articles.length === 0">No such articles.</p>
+    <div id="table-Article" class="col-lg-offset-1 col-lg-10 col-md-12" infinite-scroll="loadMoreArticles()">
         <div class="panel panel-default bootcards-media" ng-repeat="article in articles | filter:{'subarea':filterSubarea}">
-            <div class=" panel-heading " data-toggle="collapse " data-parent="#accArticles " href="#article-{{$index}}">
+            <div class=" panel-heading " data-toggle="collapse" data-parent="#accArticles " href="#article-{{$index}}">
                 <span class="pull-right text-primary "> #{{$index+1}}</span>
                 <h4> {{article.title}}</h4>
             </div>
-            <div class="panel-body ">
-            </div>
             <div>
-                <img ng-src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt=" " class="img-responsive center-block " style="padding-bottom:10px ">
+                <img ng-src="{{article.image || 'assets/images/noimagefound.jpg'}}" alt="" class="img-responsive center-block " style="padding-bottom:10px; padding-top:10px;">
             </div>
             <div id="article-{{$index}}" class="panel-collapse collapse">
                 <div class="list-group ">
@@ -68,13 +66,16 @@
                         <label>Name</label>
                         <div class="list-group-item-heading text-info "> {{article._feed.name}}</div>
                     </div>
-                    <div class="list-group-item" ng-if="article.urls.length > 0">
+                    <a href="{{article.link}}" target="_blank" class="list-group-item">
                         <i class="fa fa-2x fa-external-link pull-left"></i>
                         <label>Urls</label>
-                        <div class="list-group-item-heading text-info">
-                            <a href="{{url.url}}" target="_blank" ng-repeat="url in article.urls">{{url.url}} </a>
+                        <div class="list-group-item-heading ">
+                            <span class="text-info">{{article.link}}</span>
                         </div>
-                    </div>
+                    </a>
+                </div>
+                <div class="panel-body ">
+                    <div ng-bind-html="article.text"></div>
                 </div>
             </div>
             <div class="panel-footer">
