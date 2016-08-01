@@ -20,7 +20,8 @@ var TweetsSchema = new Schema({
     urls: Schema.Types.Mixed,
     user_mentions: Schema.Types.Mixed,
     symbols: Schema.Types.Mixed,
-    media: Schema.Types.Mixed
+    media: Schema.Types.Mixed,
+    interest: Boolean
 });
 
 module.exports = mongoose.model('Tweets', TweetsSchema);

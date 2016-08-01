@@ -2,6 +2,18 @@
 
 var _ = require('lodash');
 var Parser = require('../../NLTK/parser');
+var Q = require("q");
+var request = require("request");
+
+function expandUrl(shortUrl) {
+    return Q.ncall(request, null, {
+        method: "HEAD",
+        url: shortUrl,
+        followAllRedirects: true
+            // If a callback receives more than one (non-error) argument
+            // then the promised value is an array. We want element 0.
+    }).get('0').get('request').get('href');
+}
 
 // models
 var Tweets = require('./tweet.model');
@@ -12,6 +24,10 @@ function processTweetLinks(text) {
     text = text.replace(exp, '');
     exp = /"/gim;
     text = text.replace(exp, '');
+    exp = /via /gim;
+    text = text.replace(exp, '');
+    exp = /.@/gim;
+    text = text.replace(exp, '@');
 
     exp = /(ftp|http|https|file):\/\/[\S]+(\b|$)/gim;
     text = text.replace(exp, '');
@@ -29,17 +45,24 @@ function processTweetLinks(text) {
     return text.trim();
 }
 
-var tweetAnalys = function() {
+var tweetAnalys = function(query) {
     console.log('tweetAnalys***********');
 
-    Tweets.find().exec().then(function(tweets) {
+    Tweets.find(query).exec().then(function(tweets) {
         _.each(tweets, function(tweet) {
             // update document, using its own properties
             tweet.Cleantext = processTweetLinks(tweet.text);
 
+            // for each url
+            /*expandUrl("http://t.co/Zc3cUoly")
+    .then(function(longUrl) {
+        console.log(longUrl);
+    });
+*/
+
             // save the updated document
             Tweets.update({ _id: tweet._id }, tweet, function(updateTweet) {
-                console.log('updateTweet', updateTweet);
+                console.log('updateTweet', tweet);
             });
         });
     });
@@ -48,8 +71,14 @@ var tweetAnalys = function() {
 // tweetAnalys toutes les heures
 var timer = setInterval(function() {
     console.log('*** Tweet Analyse Automatic -- Simple 5 min');
-}, 5 * 60 * 1000);
-//tweetAnalys();
+    tweetAnalys({ Cleantext: { $exists: false } });
+}, 10 * 1000);
+
+// tweetAnalys toutes les heures
+var timer = setInterval(function() {
+    console.log('*** Tweet Analyse Automatic -- Simple 60 min');
+    tweetAnalys({});
+}, 60 * 60 * 1000);
 
 
 exports.countTweets = function(req, res) {
@@ -64,7 +93,7 @@ exports.index = function(req, res) {
         req.query.after = 0;
     }
     var after = parseInt(req.query.after);
-    Tweets.find({}).populate('rule').skip(after).limit(50).sort({ cleantext: 1 }).exec().then(function(tweets) {
+    Tweets.find({}).populate('rule').skip(after).limit(50).sort({ date: -1 }).exec().then(function(tweets) {
         return res.json(200, tweets);
     });
 };
@@ -85,10 +114,13 @@ exports.show = function(req, res) {
 // Creates a new tweet in the DB.
 exports.create = function(req, res) {
     console.log(' req.body', req.body);
+    req.body.Cleantext = processTweetLinks(tweet.text);
+
     Tweets.create(req.body, function(err, tweet) {
         if (err) {
             return handleError(res, err);
         }
+        tweetAnalys();
         return res.json(201, tweet);
     });
 };

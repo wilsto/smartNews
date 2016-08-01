@@ -13,6 +13,12 @@ exports.register = function(socket) {
     Tweet.schema.post('remove', function(doc) {
         onRemove(socket, doc);
     });
+
+    process.on('EmitNewTweet', function(data) {
+        //socket.emit('EmitCountArticles');
+        onSave(socket, data);
+    });
+
 }
 
 function onSave(socket, doc, cb) {

@@ -14,17 +14,27 @@
     </div>
     <!-- Nav tabs -->
     <div id="table-tweet" class="col-lg-offset-2 col-lg-8 col-md-12" infinite-scroll="loadMoreTweets()">
-        <div class="panel panel-default bootcards-media" ng-repeat="tweet in tweets | orderBy:'Cleantext'">
+        <div class="panel panel-default bootcards-media" ng-repeat="tweet in tweets | orderBy:'-date' | filter:{'interest':'!'}">
             <div class="panel-heading" data-toggle="collapse" data-parent="#accArticles" href="#article-{{$index}}">
-                <span class="pull-right text-primary"> #{{$index+1}}</span>
-                <h4> {{tweet.Cleantext}}</h4>
+                <span class="pull-right text-primary"> #{{$index+1}}  </span>
+                <small class="pull-right" style="padding-top:20px;">  {{tweet.date | timeago}} </small>
+                <h4> {{tweet.Cleantext || tweet.text}}</h4>
             </div>
-            <div class="panel-body">
-            </div>
-            <div ng-repeat="img in tweet.media">
+            <div ng-repeat="img in tweet.media ">
                 <img ng-src="{{img.media_url|| 'assets/images/noimagefound.jpg'}}" alt="" class="img-responsive center-block" style="padding-bottom:10px">
             </div>
+            <div class="list-group">
+                <div class="list-group-item" ng-if="tweet.urls.length > 0">
+                    <i class="fa fa-2x fa-external-link pull-left"></i>
+                    <label>Urls</label>
+                    <div class="list-group-item-heading text-info">
+                        <a href="{{url.url}}" target="_blank" ng-repeat="url in tweet.urls">{{url.expanded_url}} </a>
+                    </div>
+                </div>
+            </div>
             <div id="article-{{$index}}" class="panel-collapse collapse">
+                <div class="panel-body">
+                </div>
                 <div class="list-group">
                     <div class="list-group-item">
                         <i class="fa fa-2x fa-user pull-left"></i>
@@ -38,18 +48,11 @@
                             <span ng-repeat="hashtag in tweet.hashtags">#{{hashtag.text}} </span>
                         </div>
                     </div>
-                    <div class="list-group-item" ng-if="tweet.urls.length > 0">
-                        <i class="fa fa-2x fa-external-link pull-left"></i>
-                        <label>Urls</label>
-                        <div class="list-group-item-heading text-info">
-                            <a href="{{url.url}}" target="_blank" ng-repeat="url in tweet.urls">{{url.url}} </a>
-                        </div>
-                    </div>
                     <div class="list-group-item" ng-if="tweet.user_mentions.length > 0">
                         <i class="fa fa-2x fa-external-link pull-left"></i>
                         <label>Mentions</label>
                         <div class="list-group-item-heading text-info">
-                            <a href="{{url.url}}" target="_blank" ng-repeat="url in tweet.user_mentions">{{url.screen_name}} </a>
+                            <a href="{{url.url}}" target="_blank" ng-repeat="user in tweet.user_mentions">{{user.screen_name}} </a>
                         </div>
                     </div>
                     <div class="list-group-item">
@@ -66,10 +69,32 @@
                             {{tweet.rule.name}}
                         </div>
                     </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-2x fa-cog pull-left"></i>
+                        <label>Full text</label>
+                        <div class="list-group-item-heading text-info">
+                            {{tweet.text}}
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-footer">
-                    <small class="pull-left"></small>
-                    <small class="pull-right">  {{tweet.date}}  <span class="flag-icon" ng-class="{'flag-icon-us':tweet.lang.substr(0,2)==='en','flag-icon-fr':tweet.lang.substr(0,2)==='fr'}"></span></small>
+            </div>
+            <div class="panel-footer">
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group">
+                        <button class="btn btn-default" ng-click="updTweetInterest(tweet, false)">
+                            <i class="fa fa-trash-o"></i> Delete
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-default" ng-click="updTweetInterest(tweet, true)">
+                            <i class="fa fa-star"></i> Favorite
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-default">
+                            <i class="fa fa-twitter"></i> Tweet
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

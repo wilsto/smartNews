@@ -57,5 +57,16 @@ angular.module('jarvisApp')
             }
         };
 
+        $scope.updTweetInterest = function(tweet, interest) {
+            console.log('tweet', tweet);
+            console.log('interest', interest);
+            tweet.interest = interest;
+            $http({
+                method: 'PUT',
+                data: tweet,
+                url: '/api/tweets/' + tweet._id
+            });
+
+        };
 
     });
