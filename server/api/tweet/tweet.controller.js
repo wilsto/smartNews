@@ -62,7 +62,7 @@ var tweetAnalys = function(query) {
 
             // save the updated document
             Tweets.update({ _id: tweet._id }, tweet, function(updateTweet) {
-                console.log('updateTweet', tweet);
+                console.log('updateTweet', tweet.Cleantext);
             });
         });
     });
