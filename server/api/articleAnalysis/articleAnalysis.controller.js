@@ -77,16 +77,16 @@ process.on('CountArticles', function() {
 
 // articleAnalys les nouveaux toutes les 5 min
 var timer = setInterval(function() {
-    console.log('*** Article Analyse Automatic -- Simple 5 min');
+    console.log('*** Article Analyse Automatic -- Simple 60 min');
     articleAnalys(undefined, undefined);
-}, 5 * 60 * 1000);
+}, 60 * 60 * 1000);
 
 // articleAnalys toutes les heures
 var timer2 = setInterval(function() {
-        console.log('*** Article Analyse Automatic -- Full 60 min');
+        console.log('*** Article Analyse Automatic -- Full everey day');
         articleAnalys('all', undefined);
     },
-    60 * 60 * 1000);
+    24 * 60 * 60 * 1000);
 
 // Get list of articleAnalysiss
 exports.index = articleAnalys;

@@ -70,15 +70,15 @@ var tweetAnalys = function(query) {
 
 // tweetAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('*** Tweet Analyse Automatic -- Simple 5 min');
+    console.log('*** Tweet Analyse Automatic -- Simple 1 hour');
     tweetAnalys({ Cleantext: { $exists: false } });
-}, 10 * 1000);
+}, 60 * 60 * 1000);
 
 // tweetAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('*** Tweet Analyse Automatic -- Simple 60 min');
+    console.log('*** Tweet Analyse Automatic -- Simple 1  ay');
     tweetAnalys({});
-}, 60 * 60 * 1000);
+}, 24 * 60 * 60 * 1000);
 
 
 exports.countTweets = function(req, res) {
