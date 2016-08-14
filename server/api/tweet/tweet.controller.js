@@ -72,11 +72,11 @@ var tweetAnalys = function(query) {
 var timer = setInterval(function() {
     console.log('*** Tweet Analyse Automatic -- Simple 1 hour');
     tweetAnalys({ Cleantext: { $exists: false } });
-}, 60 * 60 * 1000);
+}, 1 * 60 * 1000);
 
 // tweetAnalys toutes les heures
 var timer = setInterval(function() {
-    console.log('*** Tweet Analyse Automatic -- Simple 1  ay');
+    console.log('*** Tweet Analyse Automatic -- Simple 1 day');
     tweetAnalys({});
 }, 24 * 60 * 60 * 1000);
 
