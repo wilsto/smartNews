@@ -28,18 +28,19 @@
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" href="app/app.css">
     <!-- injector:css -->
+    <link rel="stylesheet" href="app/account/login/login.css">
+    <link rel="stylesheet" href="app/admin/admin.css">
+    <link rel="stylesheet" href="app/app.css">
+    <link rel="stylesheet" href="app/main/main.css">
     <link rel="stylesheet" href="app/Seeker/feed/feed.css">
     <link rel="stylesheet" href="app/Seeker/rss/rss.css">
+    <link rel="stylesheet" href="app/Seeker/torrents/torrents.css">
     <link rel="stylesheet" href="app/Seeker/twitter/twitter.css">
     <link rel="stylesheet" href="app/Sharer/sharerConfig/sharerConfig.css">
     <link rel="stylesheet" href="app/Viewer/article/article.css">
     <link rel="stylesheet" href="app/Viewer/like/like.css">
     <link rel="stylesheet" href="app/Viewer/tweet/tweet.css">
     <link rel="stylesheet" href="app/Viewer/tweeteur/tweet.css">
-    <link rel="stylesheet" href="app/account/login/login.css">
-    <link rel="stylesheet" href="app/admin/admin.css">
-    <link rel="stylesheet" href="app/app.css">
-    <link rel="stylesheet" href="app/main/main.css">
     <link rel="stylesheet" href="components/modal/modal.css">
     <!-- endinjector -->
     <!-- endbuild -->
@@ -74,8 +75,8 @@
     <![endif]-->
     <!-- build:js({client,node_modules}) app/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
@@ -94,10 +95,20 @@
     <!-- build:js({.tmp,client}) app/app.js -->
     <script src="app/app.js"></script>
     <!-- injector:js -->
+    <script src="app/account/account.js"></script>
+    <script src="app/account/login/login.controller.js"></script>
+    <script src="app/account/settings/settings.controller.js"></script>
+    <script src="app/account/signup/signup.controller.js"></script>
+    <script src="app/admin/admin.controller.js"></script>
+    <script src="app/admin/admin.js"></script>
+    <script src="app/main/main.controller.js"></script>
+    <script src="app/main/main.js"></script>
     <script src="app/Seeker/feed/feed.controller.js"></script>
     <script src="app/Seeker/feed/feed.js"></script>
     <script src="app/Seeker/rss/rss.controller.js"></script>
     <script src="app/Seeker/rss/rss.js"></script>
+    <script src="app/Seeker/torrents/torrents.controller.js"></script>
+    <script src="app/Seeker/torrents/torrents.js"></script>
     <script src="app/Seeker/twitter/twitter.controller.js"></script>
     <script src="app/Seeker/twitter/twitter.js"></script>
     <script src="app/Sharer/sharerConfig/sharerConfig.controller.js"></script>
@@ -110,14 +121,6 @@
     <script src="app/Viewer/tweet/tweet.js"></script>
     <script src="app/Viewer/tweeteur/tweet.controller.js"></script>
     <script src="app/Viewer/tweeteur/tweet.js"></script>
-    <script src="app/account/account.js"></script>
-    <script src="app/account/login/login.controller.js"></script>
-    <script src="app/account/settings/settings.controller.js"></script>
-    <script src="app/account/signup/signup.controller.js"></script>
-    <script src="app/admin/admin.controller.js"></script>
-    <script src="app/admin/admin.js"></script>
-    <script src="app/main/main.controller.js"></script>
-    <script src="app/main/main.js"></script>
     <script src="components/auth/auth.service.js"></script>
     <script src="components/auth/user.service.js"></script>
     <script src="components/jsonEditor/jsonEditor.js"></script>

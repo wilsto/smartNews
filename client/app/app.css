@@ -39,7 +39,7 @@
 }
 
 .page-header {
-    margin-top: 60px;
+    margin-top: 10px;
 }
 
 input[type=checkbox] {
@@ -140,4 +140,11 @@ input[type=checkbox] {
 
 .text-green {
     color: #4AA91C;
+}
+a.m_title {
+    display: inline-block;
+}
+
+a.m_title:first-letter {
+    text-transform: uppercase;
 }

@@ -21,9 +21,8 @@
     "jsonwebtoken": "^8.1.1",
     "limdu": "^0.9.4",
     "lodash": "~4.17.5",
-    "lodash-node": "3.10.2",
     "method-override": "~2.3.5",
-    "mongoose": "~5.0.6",
+    "mongoose": "^4.10.8",
     "mongoose-findorcreate": "git+https://github.com/wilsto/mongoose-findorcreate.git",
     "morgan": "~1.9.0",
     "natural": "^0.5.6",
@@ -102,7 +101,7 @@
     "should": "~13.2.1"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": "6.11.1"
   },
   "scripts": {
     "start": "node server/app.js",

@@ -1,0 +1,118 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+    <div class="page-header">
+        <h1 class="pull-left">Torrents configuration</h1>
+        <div id="form-torrent" class="hidden-xs pull-right">
+            <form role="form" name="addFeedForm" class="form-inline pull-right">
+                <div class="form-group">
+                    <label for="addUrl" class="sr-only">URL</label>
+                    <input id="addUrl" type="url" name="addUrl" placeholder="Enter URL" size="60" ng-model="addFeed.url" required="required" class="input-sm form-control" />
+                </div>
+                <button type="submit" ng-click="add()" class="btn-sm btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add</button>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div id="modFeed" tabindex="-1" role="dialog" aria-labelledby="Edit torrent" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+                    <h4 id="modFeedLbl" class="modal-title">Edit torrent</h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" name="editFeedForm">
+                        <input type="hidden" />
+                        <div class="form-group">
+                            <label for="editName" size="30">Active</label>
+                            <input id="editactive" type="checkbox" name="editActive" ng-model="editFeed.active" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editName" size="30">Name</label>
+                            <input id="editName" type="text" name="editName" placeholder="Enter name" ng-model="editFeed.name" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="editUrl">Feed URL</label>
+                            <input id="editUrl" type="text" name="editUrl" placeholder="Enter URL" size="60" ng-model="editFeed.url" required="required" class="form-control" />
+                            <label for="editwebsite">website</label>
+                            <input id="editwebsite" type="text" name="editwebsite" placeholder="Enter website" size="60" ng-model="editFeed.website" required="required" class="form-control" />
+                            <label for="editimage">image</label>
+                            <input id="editimage" type="text" name="editimage" placeholder="Enter image" size="60" ng-model="editFeed.image" required="required" class="form-control" />
+                            <label for="editTwitter">Twitter</label>
+                            <input id="editTwitter" type="text" name="editTwitter" placeholder="Enter twitter" size="60" ng-model="editFeed.twitter" required="required" class="form-control" />
+                        </div>&nbsp;
+                        <div class="form-group">
+                            <label for="editName" size="30">Type</label>
+                            <br>
+                            <label>
+                                <input type="radio" ng-model="editFeed.type" value="Pro"> Pro
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="radio" ng-model="editFeed.type" value="Perso"> Perso
+                            </label>
+                            <br/>
+                            <label for="editsubarea" class="text-muted">SubArea</label>
+                            <input id="editsubarea" type="text" name="editsubarea" placeholder="Enter subarea" size="60" ng-model="editFeed.subarea" required="required" class="form-control" />
+                        </div>&nbsp;
+                        <div class="form-group">
+                            <label for="editName" size="30">Language</label>
+                            <br>
+                            <label>
+                                <input type="radio" ng-model="editFeed.language" value="en-US"> Anglais
+                            </label>
+                            <br/>
+                            <label>
+                                <input type="radio" ng-model="editFeed.language" value="fr-FR"> Francais
+                            </label>
+                            <br/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                    <button type="button" ng-click="update()" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="table-torrent">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>Type / SubArea</th>
+                    <th>Name
+                        <small class="text-muted"> <input id="showUrl" type="checkbox" name="showUrl" ng-model="showUrl" /> Show Url</small>
+                    </th>
+                    <th>Lang.</th>
+                    <th>State</th>
+                    <th>Last checked</th>
+                    <th>Fetched</th>
+                    <th>Outdated</th>
+                    <th>Errors</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="torrent in torrents">
+                    <td class="text-left"><span ng-class="bpFeedType(torrent.type)" class="label">{{torrent.type}}</span> <span class="label label-default">{{torrent.subarea}}</span></td>
+                    <td> <img ng-src="{{torrent.image || 'assets/images/noimagefound.jpg'}}" alt="" style="width:35px">
+                        <a href="{{torrent.website}}" target="_blank" class="m_title">{{torrent.name}}</a>
+                        <a href="https://twitter.com/{{torrent.twitter}}" target="_blank"><small class="text-info pull-right" ng-if="torrent.twitter">@{{torrent.twitter}}</small></a>
+                        <br ng-if="torrent.twitter" /><small class="text-muted pull-right" ng-if="showUrl">{{torrent.url}}</small>
+                    </td>
+                    <td class="text-center"><span class="flag-icon" ng-class="{'flag-icon-us':torrent.language.substr(0,2)==='en','flag-icon-fr':torrent.language.substr(0,2)==='fr'}"></span></td>
+                    <td class="text-center"><a href="{{torrent.url}}" target="_blank"><span ng-if="!torrent.active" class="label label-danger">Desac.</span><span ng-if="torrent.active" ng-class="bpFeedStatus(torrent.state)" class="label">{{torrent.state}}</span></a></td>
+                    <td> <span>{{torrent.lastChecked | timeago}}</span></td>
+                    <td class="text-center text-muted"> <span ng-class="{'label label-info':torrent.lastFetchedNb > 0}">{{torrent.lastFetchedNb}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-default':torrent.lastOutdatedNb > 0}">{{torrent.lastOutdatedNb}}</span></td>
+                    <td class="text-center text-muted"><span ng-class="{'label label-danger':torrent.lastErrorNb > 0}">{{torrent.lastErrorNb}}</span></td>
+                    <td>
+                        <a href="" class="btn btn-xs btn-primary" ng-click="dispUpdate($index)" data-toggle="modal" data-target="#modFeed"> <i class="glyphicon glyphicon-pencil"></i></a>
+                        <a href="/torrents" class="btn btn-xs btn-danger" ng-click="delete($index)"> <i class="glyphicon glyphicon-remove"></i></a>
+                        <a href="" ng-click="refreshOneFeed(torrent)" class="btn btn-xs btn-default">Run</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
