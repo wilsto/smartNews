@@ -78,13 +78,13 @@ process.on('CountArticles', function() {
 // articleAnalys les nouveaux toutes les 5 min
 var timer = setInterval(function() {
     console.log('*** Article Analyse Automatic -- Simple 60 min');
-    articleAnalys(undefined, undefined);
+    //articleAnalys(undefined, undefined);
 }, 60 * 60 * 1000);
 
 // articleAnalys toutes les heures
 var timer2 = setInterval(function() {
         console.log('*** Article Analyse Automatic -- Full everey day');
-        articleAnalys('all', undefined);
+        //articleAnalys('all', undefined);
     },
     24 * 60 * 60 * 1000);
 
@@ -94,7 +94,7 @@ exports.index = articleAnalys;
 function keywordAnalyse(article, callback) {
     getPage(article.link).then(function(data) {
 
-        // fréquence des mots 
+        // fréquence des mots
         var words = data.text;
 
         var wordArray = gramophone.extract(words, {

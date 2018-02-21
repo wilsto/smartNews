@@ -33,7 +33,7 @@ var timer = setInterval(function() {
     refreshFeeds(req, res);
 }, 5 * 60 * 1000);
 
-refreshFeeds();
+//refreshFeeds();
 
 var refreshOneFeed = function(req, res) {
     var id = req.params.id;

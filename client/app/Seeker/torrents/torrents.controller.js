@@ -3,7 +3,35 @@
 angular.module('jarvisApp')
     .controller('TorrentsCtrl', function($scope, $http) {
 
-        $scope.loadFeeds = function() {
+
+        $scope.test = function() {
+          $http({
+              method: 'GET',
+              url: '/api/torrents/listProviders'
+          }).
+          success(function(data) {
+              console.log('listProviders',data);;
+          }).
+          error(function() {
+              $scope.torrents = [];
+          });
+
+            $http({
+                method: 'GET',
+                url: '/api/torrents/search'
+            }).
+            success(function(data) {
+                console.log('search',data);;
+            }).
+            error(function() {
+                $scope.torrents = [];
+            });
+        };
+
+      $scope.test();
+
+
+        $scope.loadTorrentFeeds = function() {
             $http({
                 method: 'GET',
                 url: '/api/torrents'
@@ -15,7 +43,7 @@ angular.module('jarvisApp')
                 $scope.torrents = [];
             });
         };
-        $scope.loadFeeds();
+        $scope.loadTorrentFeeds();
 
         $scope.refresh = function() {
             $http({
@@ -29,7 +57,7 @@ angular.module('jarvisApp')
         };
 
 
-        $scope.refreshOneFeed = function(feed) {
+        $scope.refreshOneTorrentFeed = function(feed) {
             $http({
                 method: 'GET',
                 url: '/api/torrents/refresh/' + feed._id
@@ -41,10 +69,10 @@ angular.module('jarvisApp')
         };
 
         $scope.delete = function(id) {
-            var delFeed = $scope.torrents[id];
+            var delTorrentFeed = $scope.torrents[id];
             $http({
                 method: 'DELETE',
-                url: '/api/torrents/' + delFeed._id
+                url: '/api/torrents/' + delTorrentFeed._id
             }).
             success(function() {
                 $scope.torrents.splice(id, 1);
@@ -54,57 +82,57 @@ angular.module('jarvisApp')
         $scope.add = function() {
             $http({
                 method: 'POST',
-                data: $scope.addFeed,
+                data: $scope.addTorrentFeed,
                 url: '/api/torrents'
             }).
             success(function(data) {
                 $scope.torrents.push(data);
-                $scope.addFeed = {};
+                $scope.addTorrentFeed = {};
             });
         };
 
         $scope.dispUpdate = function(id) {
-            var editFeed = $scope.torrents[id];
-            $scope.editFeedId = id;
+            var editTorrentFeed = $scope.torrents[id];
+            $scope.editTorrentFeedId = id;
             $http({
                 method: 'GET',
-                url: '/api/torrents/' + editFeed._id
+                url: '/api/torrents/' + editTorrentFeed._id
             }).
             success(function(data) {
-                $scope.editFeed = data;
-                $('#modFeed').modal('show');
+                $scope.editTorrentFeed = data;
+                $('#modTorrentFeed').modal('show');
             }).
             error(function() {
-                $scope.editFeed = {};
+                $scope.editTorrentFeed = {};
             });
         };
 
         $scope.update = function() {
             $http({
                 method: 'POST',
-                data: $scope.editFeed,
-                url: '/api/torrents/' + $scope.editFeed._id
+                data: $scope.editTorrentFeed,
+                url: '/api/torrents/' + $scope.editTorrentFeed._id
             }).
             success(function() {
-                $scope.loadFeeds();
-                $('#modFeed').modal('hide');
+                $scope.loadTorrentFeeds();
+                $('#modTorrentFeed').modal('hide');
             });
         };
 
         $scope.addTag = function() {
-            if ($scope.editFeed.tags === undefined) {
-                $scope.editFeed.tags = [];
+            if ($scope.editTorrentFeed.tags === undefined) {
+                $scope.editTorrentFeed.tags = [];
             }
-            if ($scope.editFeed.tags.indexOf(editFeedForm.editTag.value) === -1) {
-                $scope.editFeed.tags.push(editFeedForm.editTag.value);
+            if ($scope.editTorrentFeed.tags.indexOf(editTorrentFeedForm.editTag.value) === -1) {
+                $scope.editTorrentFeed.tags.push(editTorrentFeedForm.editTag.value);
             }
         };
 
         $scope.deleteTag = function(id) {
-            $scope.editFeed.tags.splice(id, 1);
+            $scope.editTorrentFeed.tags.splice(id, 1);
         };
 
-        $scope.bpFeedStatus = function(status) {
+        $scope.bpTorrentFeedStatus = function(status) {
             if (status === 'OK' || status === 'New') {
                 return 'label-success';
             } else if (status === 'Incomplete') {
@@ -114,7 +142,7 @@ angular.module('jarvisApp')
             }
         };
 
-        $scope.bpFeedType = function(status) {
+        $scope.bpTorrentFeedType = function(status) {
             if (status === 'Pro') {
                 return 'label-primary';
             } else if (status === 'Perso') {
