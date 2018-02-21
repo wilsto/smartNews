@@ -83,7 +83,7 @@ function CapturTweetsBasedOnRules() {
         }
     });
 }
-new CapturTweetsBasedOnRules();
+//new CapturTweetsBasedOnRules();
 
 // Get list of rules
 exports.index = function(req, res) {
