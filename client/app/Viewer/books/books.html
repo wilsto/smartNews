@@ -1,0 +1,88 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="col-md-12">
+    <div class="loading-jarvis" ng-show="busy">
+        <div class="loading-text">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                Loading
+            </div>
+        </div>
+    </div>
+    <div>
+        <h1>{{area | capitalize}} <small>Books  <span class="badge">{{books.length }} / {{nbbooks}}</span></small>
+            <div class="btn-group btn-group-sm pull-right">
+                <button type="button" ng-click="filterSubarea = ''" class="btn btn-primary">All</button>
+                <button ng-repeat="subarea in subareas" type="button" ng-click="filterSubarea = subarea" class="btn btn-primary">{{subarea}}</button>
+             </div>
+        </h1>
+    </div>
+    <div id="form-torrent">
+        <form role="form" name="searchForm" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-4">
+                    <input type="checkbox" ng-model="selectedAll" ng-change='changeSelectedAll()' style="margin-left: 16px;"> Select All
+                    <div class="btn-group btn-group-sm pull-right">
+                        <button type="button" ng-click="refresh()" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                        <button type="button" ng-click="ensureReadAll()" class="btn btn-primary"><i class="glyphicon glyphicon-folder-open"></i> Mark as Read</button>
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    Filters :
+                </div>
+                <div class="col-xs-4">
+                    <div class="btn-group">
+                        <a ng-click="changeStarButton()" ng-class="{'btn-success' : btnstarArr === 0, 'btn-warning' :btnstarArr === 1, 'btn-default' :btnstarArr === 2}" class="btn"><u>Star  </u>: {{btntxt[btnstarArr]}}</a>
+                        <a ng-click="changeReadButton()" ng-class="{'btn-success' : btnreadArr === 0, 'btn-warning' :btnreadArr === 1, 'btn-default' :btnreadArr === 2}" class="btn"><u>Read  </u>: {{btntxt[btnreadArr]}}</a>
+                        <a ng-click="changeAnalysButton()" ng-class="{'btn-success' : btnanalysArr === 0, 'btn-warning' :btnanalysArr === 1, 'btn-default' :btnanalysArr === 2}" class="btn"><u>Analys  </u>: {{btntxt[btnanalysArr]}}</a>
+                    </div>
+                </div>
+                <div class="col-xs-3 hidden-xs">
+                    <button style="float: right" class="btn btn-default" ng-click="searchText()"> <i class="glyphicon glyphicon-search"></i> </button>
+                    <div style="overflow: hidden; padding-right: .5em;">
+                        <input id="search-text" type="text" name="searchText" placeholder="Enter Text" style="width: 100%;height:35px" ng-model="search.text" class="input-sm form-control" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <p ng-show="books.length === 0">No such books.</p>
+    <div id="table-Book" class="col-lg-offset-1 col-lg-10 col-md-12" infinite-scroll="loadMoreBooks()">
+        <div class="panel panel-default bootcards-media" ng-repeat="book in books | filter:{'subarea':filterSubarea}">
+            <div class=" panel-heading " data-toggle="collapse" data-parent="#accBooks " href="#book-{{$index}}">
+                <span class="pull-right text-primary "> #{{$index+1}}</span>
+                <h4> {{book.title}}</h4>
+            </div>
+            <div>
+                <img ng-src="{{book.image || 'assets/images/noimagefound.jpg'}}" alt="" class="img-responsive center-block " style="padding-bottom:10px; padding-top:10px;">
+            </div>
+            <div id="book-{{$index}}" class="panel-collapse collapse">
+                <div class="list-group ">
+                    <div class="list-group-item ">
+                        <i class="fa fa-2x fa-user pull-left "></i>
+                        <label>Name</label>
+                        <div class="list-group-item-heading text-info "> {{book._torrent.name}}</div>
+                    </div>
+                    <a href="{{book.link}}" target="_blank" class="list-group-item">
+                        <i class="fa fa-2x fa-external-link pull-left"></i>
+                        <label>Urls</label>
+                        <div class="list-group-item-heading ">
+                            <span class="text-info">{{book.link}}</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="panel-body ">
+                    <div ng-bind-html="book.text"></div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <small class="pull-left"></small>
+                <small class="pull-right">  {{book.date | timeago }}  <span class="flag-icon" ng-class="{'flag-icon-us':book.lang.substr(0,2)==='en','flag-icon-fr':book.lang.substr(0,2)==='fr'}"></span></small>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

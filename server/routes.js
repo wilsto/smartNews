@@ -18,6 +18,7 @@ module.exports = function(app) {
     app.use('/api/words', require('./api/word'));
     app.use('/api/articleAnalysiss', require('./api/articleAnalysis'));
     app.use('/api/articles', require('./api/article'));
+    app.use('/api/books', require('./api/book'));
     app.use('/api/feeds', require('./api/feed'));
     app.use('/api/rssparsers', require('./api/rssparser'));
     app.use('/api/things', require('./api/thing'));

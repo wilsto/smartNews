@@ -10,15 +10,63 @@
 'use strict';
 
 var _ = require('lodash');
-var Thing = require('./torrent.model');
+var moment = require('moment');
+moment.locale('fr');
+
+var Torrents = require('./torrent.model');
 
 const TorrentSearchApi = require('torrent-search-api');
 
 const torrentSearch = new TorrentSearchApi();
 
 torrentSearch.enableProvider('Torrent9');
-torrentSearch.enableProvider('YggTorrent',process.env.YGG_ID,process.env.YGG_SECRET);
+torrentSearch.enableProvider('YggTorrent', process.env.YGG_ID, process.env.YGG_SECRET);
 
+
+var searchTorrents = function() {
+  Torrents.find(function(err, torrents) {
+    if (err) {
+      return handleError(res, err);
+    }
+    console.log('torrents.length', torrents.length);
+    _.each(torrents, function(torrent) {
+      // Search '1080' in 'Movies' category and limit to 20 results
+      console.log('torrent', torrent);
+      if (torrent.active) {
+        torrent.patternToSearch = torrent.pattern;
+        if (torrent.currentMonth) {
+          torrent.patternToSearch = torrent.pattern + ' ' + moment().format('MMMM YYYY');
+        }
+        torrentSearch.search(torrent.patternToSearch, torrent.category, 10)
+          .then(foundTorrents => {
+            torrent.lastChecked = Date.now();
+            if (foundTorrents.length>0){
+              torrent.state = 'OK';
+            } else {
+              torrent.state = 'Incomplete';
+            }
+            torrent.stateDetails = foundTorrents.length;
+            torrent.save(function(err) {
+              if (err) {
+                console.log('torrent saved err:', torrent + ' ## ' + err);
+              }
+            });
+          })
+          .catch(err => {
+            torrent.state = 'Error';
+            torrent.stateDetails = err;
+            torrent.save(function(err) {
+              if (err) {
+                console.log('torrent saved err:', torrent + ' ## ' + err);
+              }
+            });
+          });
+      }
+    });
+  });
+};
+
+searchTorrents();
 exports.listProviders = function(req, res) {
   return res.json(200, torrentSearch.getActiveProviders());
 };
@@ -38,7 +86,7 @@ exports.search = function(req, res) {
 
 // Get list of torrents
 exports.index = function(req, res) {
-  Thing.find(function(err, torrents) {
+  Torrents.find(function(err, torrents) {
     if (err) {
       return handleError(res, err);
     }
@@ -48,7 +96,7 @@ exports.index = function(req, res) {
 
 // Get a single torrent
 exports.show = function(req, res) {
-  Thing.findById(req.params.id, function(err, torrent) {
+  Torrents.findById(req.params.id, function(err, torrent) {
     if (err) {
       return handleError(res, err);
     }
@@ -61,7 +109,7 @@ exports.show = function(req, res) {
 
 // Creates a new torrent in the DB.
 exports.create = function(req, res) {
-  Thing.create(req.body, function(err, torrent) {
+  Torrents.create(req.body, function(err, torrent) {
     if (err) {
       return handleError(res, err);
     }
@@ -74,7 +122,7 @@ exports.update = function(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  Thing.findById(req.params.id, function(err, torrent) {
+  Torrents.findById(req.params.id, function(err, torrent) {
     if (err) {
       return handleError(res, err);
     }
@@ -93,7 +141,7 @@ exports.update = function(req, res) {
 
 // Deletes a torrent from the DB.
 exports.destroy = function(req, res) {
-  Thing.findById(req.params.id, function(err, torrent) {
+  Torrents.findById(req.params.id, function(err, torrent) {
     if (err) {
       return handleError(res, err);
     }

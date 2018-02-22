@@ -1,17 +1,17 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+  Schema = mongoose.Schema;
 
 var TorrentSchema = new Schema({
-    name: String,
-    info: String,
-    icon: String,
-    url: String,
-    active: Boolean,
-    available: Schema.Types.Mixed,
-    waitToShare: Schema.Types.Mixed
-
+  category: String,
+  pattern: String,
+  currentMonth: Boolean,
+  active: Boolean,
+  state: String,
+  stateDetails: String,
+  lastChecked: Date,
+  hasErrors: Number
 });
 
 module.exports = mongoose.model('Torrent', TorrentSchema);
