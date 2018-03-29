@@ -38,7 +38,7 @@
     "q": "^1.4.1",
     "request": "^2.74.0",
     "serve-favicon": "~2.4.5",
-    "socket.io": "^2.0.4",
+    "socket.io": "^2.1.0",
     "socket.io-client": "^2.0.4",
     "socketio-jwt": "^4.3.4",
     "summarizer": "^1.0.0",
