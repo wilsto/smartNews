@@ -45,7 +45,7 @@
     "talisman": "^0.20.0",
     "torrent-search-api": "^1.0.26",
     "twit": "^2.2.2",
-    "unfluff": "^3.0.0"
+    "unfluff": "^3.0.1"
   },
   "devDependencies": {
     "grunt": "~1.0.2",
