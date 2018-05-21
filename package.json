@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^2.6.1",
     "audit-log": "^0.9.1",
     "body-parser": "~1.18.2",
     "composable-middleware": "^0.3.0",
