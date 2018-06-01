@@ -18,7 +18,7 @@
     "express-session": "~1.15.6",
     "feedparser": "^2.2.9",
     "gramophone": "0.0.3",
-    "jsonwebtoken": "^8.1.1",
+    "jsonwebtoken": "^8.2.2",
     "limdu": "^0.9.4",
     "lodash": "~4.17.5",
     "lodash-node": "3.10.2",
