@@ -44,7 +44,7 @@
     "summarizer": "^1.0.0",
     "talisman": "^0.20.0",
     "torrent-search-api": "^1.0.26",
-    "twit": "^2.2.2",
+    "twit": "2.2.10",
     "unfluff": "^3.0.0"
   },
   "devDependencies": {
