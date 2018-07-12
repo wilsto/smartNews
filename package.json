@@ -22,7 +22,7 @@
     "limdu": "^0.9.4",
     "lodash": "~4.17.5",
     "lodash-node": "3.10.2",
-    "method-override": "~2.3.5",
+    "method-override": "~3.0.0",
     "mongoose": "~5.0.6",
     "mongoose-findorcreate": "git+https://github.com/wilsto/mongoose-findorcreate.git",
     "morgan": "~1.9.0",
