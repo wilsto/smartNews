@@ -7,7 +7,7 @@
     "audit-log": "^0.9.1",
     "body-parser": "~1.18.2",
     "composable-middleware": "^0.3.0",
-    "compression": "~1.7.2",
+    "compression": "1.7.2",
     "connect-mongo": "^2.0.1",
     "console-stamp": "^0.2.2",
     "cookie-parser": "~1.4.1",
