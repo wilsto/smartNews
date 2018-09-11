@@ -25,7 +25,7 @@
     "method-override": "~2.3.5",
     "mongoose": "~5.0.6",
     "mongoose-findorcreate": "git+https://github.com/wilsto/mongoose-findorcreate.git",
-    "morgan": "~1.9.0",
+    "morgan": "~1.9.1",
     "natural": "^0.5.6",
     "nj-tinyurl": "^0.1.0",
     "node-bitlyapi": "^0.4.0",
