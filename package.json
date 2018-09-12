@@ -20,7 +20,7 @@
     "gramophone": "0.0.3",
     "jsonwebtoken": "^8.1.1",
     "limdu": "^0.9.4",
-    "lodash": "~4.17.5",
+    "lodash": "4.17.10",
     "lodash-node": "3.10.2",
     "method-override": "~2.3.5",
     "mongoose": "~5.0.6",
