@@ -9,7 +9,7 @@
     "composable-middleware": "^0.3.0",
     "compression": "~1.7.2",
     "connect-mongo": "^2.0.1",
-    "console-stamp": "^0.2.2",
+    "console-stamp": "0.2.6",
     "cookie-parser": "~1.4.1",
     "ejs": "~2.5.7",
     "errorhandler": "~1.5.0",
